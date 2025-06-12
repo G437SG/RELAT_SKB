@@ -1,48 +1,37 @@
-# 🏢 SKBORGES - Formulário de Arquitetura
+# RELAT_SKB - Sistema SKBORGES
 
-Sistema de captação de informações de clientes para projetos arquitetônicos.
+Sistema web profissional para coleta de informações de projetos arquitetônicos.
 
-## 🚀 Acesso Rápido
+## 🏗️ Características Principais
+- Interface moderna com layout de duas colunas
+- Observações laterais fixas
+- Formulário completo com validações
+- Geração de relatórios PDF
+- Design responsivo
 
-### Opção 1: Duplo clique
-- Clique duas vezes no arquivo `start.bat`
-- O navegador abrirá automaticamente
+## 🚀 Tecnologias
+- HTML5 Semântico
+- CSS3 (Grid, Flexbox, Animações)
+- JavaScript Vanilla
+- Font Awesome 6.0
 
-### Opção 2: Linha de comando
-```bash
-npm start
-```
+## 📋 Seções do Sistema
+1. **Informações do Cliente** - Dados pessoais e contato
+2. **Informações do Projeto** - Detalhes técnicos
+3. **Escopo do Projeto** - Serviços incluídos
+4. **Ambientes e Necessidades** - Dinâmico
+5. **Prazos do Projeto** - Cálculo automático
+6. **Observações Laterais** - Notas fixas
 
-### Opção 3: Atalho da área de trabalho
-- Use o atalho "Abrir SKBORGES"
+## 📱 Responsividade
+- ✅ Desktop (1400px+)
+- ✅ Tablet (768px-1024px) 
+- ✅ Mobile (até 768px)
 
-## 🌐 URLs de Acesso
+## 🎨 Versão Atual
+**v4.0** - Layout com observações laterais fixas
 
-- **Formulário Principal**: http://localhost:3000
-- **Status do Servidor**: http://localhost:3000/api/status
-- **Lista de Projetos**: http://localhost:3000/api/projetos
-- **Exportar Dados**: http://localhost:3000/api/export
-
-## 📋 Funcionalidades
-
-✅ Cadastro completo de clientes
-✅ Informações do imóvel
-✅ Escopo do projeto
-✅ Projetos complementares
-✅ Sistema de demandas interativo
-✅ Prazos do projeto
-✅ Exportação de dados
-✅ Interface moderna e responsiva
-
-## 🔧 Requisitos
-
-- Node.js 14+ instalado
-- Navegador moderno (Chrome, Firefox, Edge, Safari)
-
-## 📞 Suporte
-
-Para dúvidas ou problemas, entre em contato com a equipe SKBORGES.
-
----
-
-**Desenvolvido com ❤️ para SKBORGES Arquitetura Corporativa**
+## 📧 Contato
+**Desenvolvido por:** Gabriel Goulart  
+**GitHub:** @G437SG  
+**Email:** gabriel10goulart@gmail.com
