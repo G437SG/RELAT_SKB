@@ -374,7 +374,8 @@ app.use((error, req, res, next) => {
 });
 
 // ===== INICIAR SERVIDOR =====
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
     console.log('==========================================');
     console.log(`🚀 SKBORGES v3.0.0 iniciado com sucesso!`);
     console.log(`📡 URL: http://localhost:${PORT}`);
