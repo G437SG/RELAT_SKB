@@ -95,11 +95,3 @@ logs
 # Temporary files
 tmp/
 temp/
-
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.venv/
-venv/
-uploads/

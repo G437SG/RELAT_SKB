@@ -3,13 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKBORGES - Formulário de Projeto Arquitetônico</title>
+    <title>SKBORGES - Sistema Profissional de Projetos Arquitetônicos</title>
     
-    <!-- CSS Framework -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+    <!-- Seus outros scripts e CSS vêm depois -->
+    <link rel="stylesheet" href="style.css">
+    <!-- ... outros arquivos ... -->
+    
 </head>
 <body>
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="images/logo.png" alt="SKBORGES Logo" class="logo-img">
+                <div class="logo-text">
+                    <h1>SKBORGES</h1>
+                    <div class="subtitle">Sistema Profissional de Projetos Arquitetônicos</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
     <!-- Loading Screen -->
     <div id="page-loading" class="page-loading">
         <div class="loading-spinner"></div>
@@ -240,7 +253,7 @@
                                         </label>
                                     </div>
                                     
-                                    <div id="outroTipoContainer" class="subopcao-container" style="display: none;">
+                                    <div id="outroTipoContainer" class="subopcao-container hidden">
                                         <input type="text" 
                                                name="outroTipoEspecificar" 
                                                class="form-input subopcao-input" 
@@ -266,48 +279,6 @@
                                             <span class="radio-custom"></span>
                                             Reforma
                                         </label>
-                                    </div>
-                                    
-                                    <!-- Subopções para Reforma -->
-                                    <div id="subopcoes-reforma-container" class="subopcoes-container" style="display: none;">
-                                        <div class="checkbox-group">
-                                            <label class="checkbox-option">
-                                                <input type="checkbox" name="tipoReforma[]" value="Ampliação">
-                                                <span class="checkbox-custom"></span>
-                                                Ampliação
-                                            </label>
-                                            <label class="checkbox-option">
-                                                <input type="checkbox" name="tipoReforma[]" value="Modernização">
-                                                <span class="checkbox-custom"></span>
-                                                Modernização
-                                            </label>
-                                            <label class="checkbox-option">
-                                                <input type="checkbox" name="tipoReforma[]" value="Adequação">
-                                                <span class="checkbox-custom"></span>
-                                                Adequação
-                                            </label>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Subopções para Do Zero -->
-                                    <div id="subopcoes-do-zero-container" class="subopcoes-container" style="display: none;">
-                                        <div class="checkbox-group">
-                                            <label class="checkbox-option">
-                                                <input type="checkbox" name="caracteristicasProjeto[]" value="Sustentável">
-                                                <span class="checkbox-custom"></span>
-                                                Sustentável
-                                            </label>
-                                            <label class="checkbox-option">
-                                                <input type="checkbox" name="caracteristicasProjeto[]" value="Moderno">
-                                                <span class="checkbox-custom"></span>
-                                                Moderno
-                                            </label>
-                                            <label class="checkbox-option">
-                                                <input type="checkbox" name="caracteristicasProjeto[]" value="Tradicional">
-                                                <span class="checkbox-custom"></span>
-                                                Tradicional
-                                            </label>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -676,7 +647,7 @@
                                         <span class="progress-percentage">0%</span>
                                     </div>
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 0%"></div>
+                                        <div class="progress-fill"></div>
                                     </div>
                                 </div>
                             </div>
