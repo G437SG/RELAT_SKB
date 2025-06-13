@@ -49,9 +49,7 @@
         success(message, data) { this.log('INFO', `✅ ${message}`, data); },
         warning(message, data) { this.log('WARN', `⚠️ ${message}`, data); },
         error(message, data) { this.log('ERROR', `❌ ${message}`, data); }
-    };
-
-    // ===== UTILITÁRIOS =====
+    };    // ===== UTILITÁRIOS =====
     const Utils = {
         delay: (ms) => new Promise(resolve => setTimeout(resolve, ms)),
 
@@ -88,6 +86,42 @@
 
         generateId() {
             return 'id_' + Math.random().toString(36).substr(2, 9);
+        },
+
+        // NOVO: Detectar dispositivos móveis
+        isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                   /Mobi|Android/i.test(navigator.userAgent) ||
+                   (typeof window.orientation !== "undefined") ||
+                   (navigator.maxTouchPoints > 1);
+        },
+
+        // NOVO: Detectar iOS especificamente  
+        isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        },
+
+        // NOVO: Detectar Android
+        isAndroid() {
+            return /Android/i.test(navigator.userAgent);
+        },
+
+        // NOVO: Criar arquivo blob para download
+        createDownloadBlob(content, filename, mimeType = 'text/html') {
+            const blob = new Blob([content], { type: mimeType });
+            const url = window.URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.style.display = 'none';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setTimeout(() => window.URL.revokeObjectURL(url), 100);
         }
     };
 
@@ -1298,50 +1332,384 @@
                 .item-status { font-size: 0.7rem; font-weight: 600; }
                 .item-status.selected { color: #155724; }
                 .item-status.not-selected { color: #856404; }                .footer { margin-top: 3rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center; color: #6c757d; font-size: 0.8rem; }
+                
+                /* Media Queries - Print */
                 @media print { 
                     .no-print { display: none !important; } 
-                    body { font-size: 12px; } 
-                    .container { padding: 0; } 
-                    .header { margin-bottom: 1rem; padding: 1.5rem; }
+                    body { font-size: 12px; margin: 0; padding: 0; } 
+                    .container { padding: 0; max-width: none; } 
+                    .header { margin-bottom: 1rem; padding: 1.5rem; page-break-inside: avoid; }
                     .logo-img { width: 50px; height: 50px; }
                     .logo-text h1 { font-size: 2rem; }
                     .header-content { flex-direction: column; align-items: center; text-align: center; gap: 1rem; }
                     .version-info { text-align: center; }
+                    .section { page-break-inside: avoid; margin-bottom: 1rem; }
+                    .section-header { page-break-after: avoid; }
                 }
-            `;
-        },        openPrintWindow(html) {
+                
+                /* Media Queries - Mobile Devices */
+                @media screen and (max-width: 768px) {
+                    body { 
+                        font-size: 14px; 
+                        line-height: 1.4;
+                        -webkit-text-size-adjust: 100%;
+                        -webkit-font-smoothing: antialiased;
+                    }
+                    .container { 
+                        padding: 10px; 
+                        margin: 0;
+                        max-width: 100%;
+                        box-sizing: border-box;
+                    }
+                    .header { 
+                        padding: 15px; 
+                        margin-bottom: 15px;
+                    }
+                    .header-content { 
+                        flex-direction: column; 
+                        text-align: center; 
+                        gap: 10px; 
+                    }
+                    .logo-img { 
+                        width: 60px; 
+                        height: 60px; 
+                    }
+                    .logo-text h1 { 
+                        font-size: 1.8rem; 
+                        margin: 0.5rem 0;
+                    }
+                    .section { 
+                        margin-bottom: 15px; 
+                        border-radius: 8px;
+                        overflow: hidden;
+                    }
+                    .section-header { 
+                        padding: 12px 15px; 
+                        font-size: 1.1rem;
+                        word-break: break-word;
+                    }
+                    .section-content { 
+                        padding: 15px; 
+                    }
+                    .info-row { 
+                        flex-direction: column; 
+                        gap: 5px; 
+                        margin-bottom: 12px;
+                    }
+                    .info-label { 
+                        margin-bottom: 5px; 
+                        font-weight: 600;
+                    }
+                    .info-value { 
+                        padding: 8px 12px; 
+                        border-radius: 6px;
+                        word-break: break-word;
+                        hyphens: auto;
+                    }
+                    .ambiente-item { 
+                        flex-direction: column; 
+                        text-align: left; 
+                        padding: 12px;
+                    }
+                    .observacao-item { 
+                        margin-bottom: 15px; 
+                    }
+                    .observacao-header { 
+                        padding: 10px 12px; 
+                        font-size: 1rem;
+                    }
+                    .observacao-content { 
+                        padding: 12px; 
+                    }
+                    .footer { 
+                        margin-top: 2rem; 
+                        padding: 15px; 
+                        font-size: 0.9rem;
+                    }
+                    
+                    /* Melhorar legibilidade em mobile */
+                    h1, h2, h3 { line-height: 1.3; margin-bottom: 0.5rem; }
+                    p { margin-bottom: 0.75rem; }
+                    
+                    /* Botões touch-friendly */
+                    button { 
+                        min-height: 44px; 
+                        min-width: 44px; 
+                        padding: 12px 16px;
+                        font-size: 16px;
+                        border-radius: 8px;
+                        touch-action: manipulation;
+                    }
+                }
+                
+                /* Media Queries - Tablets */
+                @media screen and (min-width: 769px) and (max-width: 1024px) {
+                    .container { 
+                        padding: 20px; 
+                        max-width: 100%;
+                    }
+                    .info-row { 
+                        gap: 15px; 
+                    }
+                }
+                
+                /* Accessibility improvements */
+                @media (prefers-reduced-motion: reduce) {
+                    * {
+                        animation-duration: 0.01ms !important;
+                        animation-iteration-count: 1 !important;
+                        transition-duration: 0.01ms !important;
+                    }
+                }
+                
+                /* Dark mode support */
+                @media (prefers-color-scheme: dark) {
+                    body { background: #1a1a1a; color: #e0e0e0; }
+                    .container { background: #2d2d2d; }
+                    .header { background: #333; }
+                    .section { background: #2d2d2d; border-color: #444; }
+                    .section-header { background: #444; color: #fff; }
+                    .info-value { background: #333; color: #e0e0e0; }
+                    .footer { background: #333; color: #ccc; }
+                }
+            `;},
+
+        openPrintWindow(html) {
             try {
-                Logger.info('🪟 Tentando abrir janela de impressão...');
+                Logger.info('🪟 Iniciando exportação de relatório...');
                 
-                // Tentar abrir a janela
-                const printWindow = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+                // Detectar dispositivo
+                const isMobile = Utils.isMobile();
+                const isIOS = Utils.isIOS();
+                const isAndroid = Utils.isAndroid();
                 
-                if (!printWindow) {
-                    Logger.error('❌ Falha ao abrir janela - provavelmente bloqueada por pop-up blocker');
-                    throw new Error('Não foi possível abrir a janela de impressão. Verifique se o bloqueador de pop-ups está desabilitado.');
+                Logger.info(`📱 Dispositivo detectado - Mobile: ${isMobile}, iOS: ${isIOS}, Android: ${isAndroid}`);
+
+                if (isMobile) {
+                    Logger.info('📱 Usando estratégia móvel para exportação...');
+                    this.handleMobileExport(html);
+                } else {
+                    Logger.info('💻 Usando estratégia desktop para exportação...');
+                    this.handleDesktopExport(html);
                 }
 
-                Logger.info('✅ Janela aberta, escrevendo conteúdo...');
+            } catch (error) {
+                Logger.error('❌ Erro ao exportar relatório:', error);
+                this.showMobileAlternatives(html);
+            }
+        },
+
+        handleMobileExport(html) {
+            try {
+                // Estratégia 1: Tentar window.open com configurações móveis
+                Logger.info('📱 Tentativa 1: window.open otimizado para mobile...');
+                
+                const printWindow = window.open('', '_blank', 'width=device-width,height=device-height,scrollbars=yes,resizable=yes,toolbar=no,menubar=no');
+                
+                if (printWindow && !printWindow.closed) {
+                    Logger.success('✅ Janela aberta com sucesso!');
+                    
+                    printWindow.document.write(html);
+                    printWindow.document.close();
+                    
+                    // Aguardar carregamento e focar
+                    printWindow.onload = () => {
+                        printWindow.focus();
+                        
+                        // Para iOS: aguardar um pouco antes de tentar imprimir
+                        if (Utils.isIOS()) {
+                            setTimeout(() => {
+                                try {
+                                    printWindow.print();
+                                } catch (e) {
+                                    Logger.warning('Falha na impressão automática no iOS');
+                                }
+                            }, 1000);
+                        }
+                    };
+                    
+                    return; // Sucesso!
+                }
+                
+                throw new Error('Janela não abriu ou foi bloqueada');
+                
+            } catch (error) {
+                Logger.warning('⚠️ Estratégia móvel 1 falhou:', error.message);
+                
+                // Estratégia 2: Criar uma nova página em tela cheia
+                Logger.info('📱 Tentativa 2: Página dedicada para relatório...');
+                this.createMobileReportPage(html);
+            }
+        },
+
+        createMobileReportPage(html) {
+            try {
+                // Criar overlay em tela cheia
+                const overlay = document.createElement('div');
+                overlay.id = 'mobile-report-overlay';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: white;
+                    z-index: 999999;
+                    overflow-y: auto;
+                    -webkit-overflow-scrolling: touch;
+                `;
+
+                // Extrair apenas o conteúdo do body do HTML
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                const bodyContent = tempDiv.querySelector('body')?.innerHTML || html;
+
+                // Criar conteúdo do overlay
+                overlay.innerHTML = `
+                    <div style="padding: 20px; max-width: 100%; box-sizing: border-box;">
+                        <!-- Barra de controle móvel -->
+                        <div style="position: sticky; top: 0; background: #2196F3; color: white; padding: 15px; margin: -20px -20px 20px -20px; border-radius: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <h3 style="margin: 0; font-size: 18px;">📄 Relatório SKBORGES</h3>
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                    <button onclick="this.closest('#mobile-report-overlay').style.display='none'" 
+                                            style="background: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                                        ✕ Fechar
+                                    </button>
+                                    <button onclick="window.print()" 
+                                            style="background: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                                        🖨️ Imprimir
+                                    </button>
+                                    <button onclick="MobileReportUtils.shareReport()" 
+                                            style="background: #FF9800; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                                        📤 Compartilhar
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px; font-size: 12px; opacity: 0.9;">
+                                💡 Dica: Use "Imprimir" para salvar como PDF ou imprimir
+                            </div>
+                        </div>
+                        
+                        <!-- Conteúdo do relatório -->
+                        <div id="mobile-report-content" style="background: white;">
+                            ${bodyContent}
+                        </div>
+                        
+                        <!-- Rodapé com instruções -->
+                        <div style="margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px; text-align: center; color: #666;">
+                            <p style="margin: 0; font-size: 14px;">
+                                📱 <strong>Como salvar este relatório:</strong><br>
+                                • Toque em "Imprimir" e escolha "Salvar como PDF"<br>
+                                • Use "Compartilhar" para enviar por email ou WhatsApp<br>
+                                • Faça capturas de tela das seções importantes
+                            </p>
+                        </div>
+                    </div>
+                `;
+
+                // Adicionar utilitários para mobile
+                window.MobileReportUtils = {
+                    shareReport() {
+                        const reportContent = document.getElementById('mobile-report-content');
+                        const reportText = reportContent ? reportContent.innerText : 'Relatório SKBORGES gerado';
+                        
+                        if (navigator.share) {
+                            navigator.share({
+                                title: 'Relatório SKBORGES',
+                                text: reportText.substring(0, 200) + '...',
+                                url: window.location.href
+                            }).catch(err => {
+                                Logger.warning('Erro ao compartilhar:', err);
+                                this.fallbackShare();
+                            });
+                        } else {
+                            this.fallbackShare();
+                        }
+                    },
+                    
+                    fallbackShare() {
+                        const subject = encodeURIComponent('Relatório SKBORGES');
+                        const body = encodeURIComponent(`Segue relatório gerado pelo sistema SKBORGES.\n\nPara visualizar: ${window.location.href}`);
+                        const mailtoLink = `mailto:?subject=${subject}&body=${body}`;
+                        
+                        window.location.href = mailtoLink;
+                    }
+                };
+
+                // Adicionar ao document
+                document.body.appendChild(overlay);
+                
+                // Scroll para o topo
+                overlay.scrollTop = 0;
+                
+                Logger.success('✅ Relatório aberto em tela cheia para mobile!');
+                
+            } catch (error) {
+                Logger.error('❌ Erro ao criar página móvel:', error);
+                this.showMobileAlternatives(html);
+            }
+        },
+
+        handleDesktopExport(html) {
+            try {
+                Logger.info('💻 Abrindo janela para desktop...');
+                
+                const printWindow = window.open('', '_blank', 'width=1000,height=700,scrollbars=yes,resizable=yes,toolbar=no,menubar=yes');
+                
+                if (!printWindow || printWindow.closed) {
+                    throw new Error('Janela bloqueada por pop-up blocker');
+                }
+
                 printWindow.document.write(html);
                 printWindow.document.close();
 
                 printWindow.onload = () => {
-                    Logger.info('📄 Conteúdo carregado na janela');
+                    Logger.info('📄 Conteúdo carregado, focando janela...');
                     printWindow.focus();
                 };
 
-                // Verificar se a janela foi realmente criada
                 setTimeout(() => {
                     if (printWindow.closed) {
-                        Logger.warning('⚠️ A janela foi fechada pelo usuário ou bloqueador');
+                        Logger.warning('⚠️ Janela foi fechada');
                     } else {
-                        Logger.success('✅ Janela de relatório aberta com sucesso');
+                        Logger.success('✅ Janela de relatório aberta com sucesso!');
                     }
                 }, 1000);
 
             } catch (error) {
-                Logger.error('❌ Erro ao abrir janela de impressão:', error);
-                throw error;
+                Logger.error('❌ Erro na exportação desktop:', error);
+                this.showDesktopAlternatives(html);
+            }
+        },
+
+        showMobileAlternatives(html) {
+            const fileName = `Relatorio_SKBORGES_${Utils.formatDate(new Date()).replace(/\//g, '-')}.html`;
+            
+            Logger.info('📱 Mostrando alternativas móveis...');
+            
+            // Tentar download direto
+            try {
+                Utils.createDownloadBlob(html, fileName);
+                
+                alert(`📱 RELATÓRIO PARA CELULAR\n\n✅ Arquivo baixado: ${fileName}\n\n📋 Como visualizar:\n• Abra o arquivo baixado\n• Use o navegador para imprimir/salvar como PDF\n• Compartilhe o arquivo gerado\n\n💡 O arquivo foi salvo na pasta Downloads`);
+                
+            } catch (downloadError) {
+                Logger.error('❌ Falha no download:', downloadError);
+                
+                // Última alternativa: mostrar instruções
+                alert(`📱 EXPORTAÇÃO PARA CELULAR\n\n⚠️ Seu dispositivo tem limitações para exportação automática.\n\n🔧 SOLUÇÕES:\n\n1️⃣ COPIAR DADOS:\n• Volte ao formulário\n• Copie as informações manualmente\n• Cole em um email ou documento\n\n2️⃣ CAPTURA DE TELA:\n• Faça prints de cada seção\n• Envie as imagens por WhatsApp/Email\n\n3️⃣ ACESSAR NO COMPUTADOR:\n• Abra este site no computador\n• Preencha novamente (mais fácil)\n• Exporte normalmente\n\n💡 Recomendamos usar um computador para melhor experiência`);
+            }
+        },
+
+        showDesktopAlternatives(html) {
+            Logger.warning('💻 Mostrando alternativas desktop...');
+            
+            if (confirm('Não foi possível abrir a janela de impressão (bloqueador de pop-ups?).\n\nDeseja baixar o relatório como arquivo HTML?')) {
+                const fileName = `Relatorio_SKBORGES_${Utils.formatDate(new Date()).replace(/\//g, '-')}.html`;
+                Utils.createDownloadBlob(html, fileName);
+                
+                alert(`✅ Arquivo baixado: ${fileName}\n\n📋 Como usar:\n• Abra o arquivo baixado\n• Use Ctrl+P para imprimir\n• Salve como PDF na impressão`);
             }
         },
 
