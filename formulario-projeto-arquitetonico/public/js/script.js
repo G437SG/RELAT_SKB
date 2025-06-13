@@ -598,9 +598,7 @@
                 prazoProjetoExecutivo: this.getFieldValue('prazoProjetoExecutivo'),
                 prazoComplementares: this.getFieldValue('prazoComplementares'),
                 prazoTotal: this.getFieldValue('prazoTotal')
-            };
-
-            // OBSERVAÇÕES (TODAS)
+            };            // OBSERVAÇÕES (TODAS)
             const observacoesData = {
                 observacaoCliente: this.getFieldValue('observacaoCliente'),
                 observacaoProjeto: this.getFieldValue('observacaoProjeto'),
@@ -608,7 +606,14 @@
                 observacaoAmbientes: this.getFieldValue('observacaoAmbientes'),
                 observacaoPrazos: this.getFieldValue('observacaoPrazos'),
                 observacaoFinal: this.getFieldValue('observacaoFinal')
-            };            // CONSOLIDAR TODOS OS DADOS - ESTRUTURA COMPLETA
+            };
+
+            // DEBUG ESPECÍFICO PARA OBSERVAÇÕES
+            console.log('💭 === DEBUG DETALHADO DAS OBSERVAÇÕES ===');
+            Object.entries(observacoesData).forEach(([key, value]) => {
+                console.log(`💭 ${key}: "${value}" (${value ? 'PREENCHIDA' : 'VAZIA'})`);
+            });
+            console.log('💭 ===================================');// CONSOLIDAR TODOS OS DADOS - ESTRUTURA COMPLETA
             const data = {
                 // Dados do cliente
                 ...clienteData,
@@ -649,12 +654,12 @@
             console.log('🎯 === COLETA ULTRA-DETALHADA FINALIZADA ===');
 
             return data;
-        },
-
-        // Funções auxiliares para coleta específica
+        },        // Funções auxiliares para coleta específica
         getFieldValue(name) {
             const field = document.querySelector(`[name="${name}"]`);
-            return field ? (field.value || '') : '';
+            const value = field ? (field.value || '').trim() : '';
+            console.log(`🔍 Campo ${name}: "${value}" (${value ? 'PREENCHIDO' : 'VAZIO'})`);
+            return value;
         },
 
         getRadioValue(name) {
@@ -1106,16 +1111,28 @@
 
             html += '</div>';
             return html;        },        generateObservationsSection(data) {
-            console.log('💭 Gerando seção COMPLETA de observações');
+            console.log('💭 === INICIANDO GERAÇÃO DA SEÇÃO DE OBSERVAÇÕES ===');
+            console.log('💭 Dados recebidos:', data);
             
             const observacoes = [
-                { title: 'Observações sobre o Cliente', content: data.observacaoCliente, icon: '👤' },
-                { title: 'Observações sobre o Projeto', content: data.observacaoProjeto, icon: '🏗️' },
-                { title: 'Observações sobre o Escopo', content: data.observacaoEscopo, icon: '📐' },
-                { title: 'Observações sobre os Ambientes', content: data.observacaoAmbientes, icon: '🏠' },
-                { title: 'Observações sobre os Prazos', content: data.observacaoPrazos, icon: '⏰' },
-                { title: 'Observações Finais', content: data.observacaoFinal, icon: '📝' }
+                { title: 'Observações sobre o Cliente', content: data.observacaoCliente, icon: '👤', field: 'observacaoCliente' },
+                { title: 'Observações sobre o Projeto', content: data.observacaoProjeto, icon: '🏗️', field: 'observacaoProjeto' },
+                { title: 'Observações sobre o Escopo', content: data.observacaoEscopo, icon: '📐', field: 'observacaoEscopo' },
+                { title: 'Observações sobre os Ambientes', content: data.observacaoAmbientes, icon: '🏠', field: 'observacaoAmbientes' },
+                { title: 'Observações sobre os Prazos', content: data.observacaoPrazos, icon: '⏰', field: 'observacaoPrazos' },
+                { title: 'Observações Finais', content: data.observacaoFinal, icon: '📝', field: 'observacaoFinal' }
             ];
+            
+            // DEBUG DETALHADO DE CADA OBSERVAÇÃO
+            console.log('💭 === ANÁLISE DETALHADA DAS OBSERVAÇÕES ===');
+            observacoes.forEach((obs, index) => {
+                console.log(`💭 ${index + 1}. Campo: ${obs.field}`);
+                console.log(`💭    Título: ${obs.title}`);
+                console.log(`💭    Conteúdo: "${obs.content}"`);
+                console.log(`💭    Tipo: ${typeof obs.content}`);
+                console.log(`💭    Tem conteúdo: ${obs.content && obs.content.trim() ? 'SIM' : 'NÃO'}`);
+                console.log('💭 ---');
+            });
             
             let html = '<div class="observations-grid">';
             let totalPreenchidas = 0;
@@ -1165,10 +1182,12 @@
                         </div>
                     </div>
                 </div>
-            `;
-
-            console.log('💭 Seção de observações COMPLETA gerada');
-            return html;        },
+            `;            console.log('💭 === SEÇÃO DE OBSERVAÇÕES GERADA COM SUCESSO ===');
+            console.log(`💭 HTML gerado (${html.length} caracteres):`, html.substring(0, 200) + '...');
+            console.log('💭 === FIM DA GERAÇÃO DE OBSERVAÇÕES ===');
+            
+            return html;
+        },
 
         getReportStyles() {
             return `
@@ -1467,8 +1486,7 @@
                 if (window.pageYOffset > 300) {
                     scrollButton.style.display = 'flex';
                 } else {
-                    scrollButton.style.display = 'none';
-                }
+                    scrollButton.style.display = 'none';                }
             }
         }
     };
@@ -1478,6 +1496,9 @@
         async init() {
             try {
                 Logger.info(`Inicializando ${APP_CONFIG.name} v${APP_CONFIG.version}`);
+
+                // CORREÇÃO: Garantir que a página inicie no topo - MÚLTIPLAS ESTRATÉGIAS
+                this.forceScrollTop();
 
                 if (document.readyState === 'loading') {
                     await new Promise(resolve => {
@@ -1496,12 +1517,48 @@
                 this.setupMainEventListeners();
                 this.hideLoading();
 
+                // CORREÇÃO: Garantir scroll no topo após inicialização completa
+                setTimeout(() => {
+                    this.forceScrollTop();
+                }, 100);
+
+                // SEGUNDA VERIFICAÇÃO DE SCROLL
+                setTimeout(() => {
+                    this.forceScrollTop();
+                }, 500);
+
                 AppState.isInitialized = true;
                 Logger.success('Aplicação inicializada com sucesso');
 
             } catch (error) {
                 Logger.error(`Erro na inicialização: ${error.message}`);
                 this.showError('Erro ao inicializar a aplicação');
+            }
+        },
+
+        forceScrollTop() {
+            // Múltiplas estratégias para garantir que o scroll vá para o topo
+            try {
+                // Estratégia 1: window.scrollTo
+                window.scrollTo(0, 0);
+                
+                // Estratégia 2: document elements
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+                
+                // Estratégia 3: usando scrollIntoView no primeiro elemento
+                const firstElement = document.body.firstElementChild;
+                if (firstElement) {
+                    firstElement.scrollIntoView({ 
+                        top: 0, 
+                        behavior: 'instant',
+                        block: 'start' 
+                    });
+                }
+                
+                Logger.info('🔝 Scroll forçado para o topo da página');
+            } catch (error) {
+                Logger.warning('Erro ao forçar scroll para o topo:', error);
             }
         },
 
