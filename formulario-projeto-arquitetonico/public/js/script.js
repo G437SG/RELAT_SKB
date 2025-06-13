@@ -1333,21 +1333,180 @@
                 .item-status.selected { color: #155724; }
                 .item-status.not-selected { color: #856404; }                .footer { margin-top: 3rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center; color: #6c757d; font-size: 0.8rem; }
                 
-                /* Media Queries - Print */
+                /* Media Queries - PRINT (PRIORIDADE MÁXIMA - PDF IDÊNTICO EM TODOS OS DISPOSITIVOS) */
                 @media print { 
+                    /* RESET: Anular TODAS as regras mobile para garantir PDF idêntico */
+                    * {
+                        font-size: initial !important;
+                        padding: initial;
+                        margin: initial;
+                        flex-direction: initial !important;
+                        text-align: initial !important;
+                        gap: initial !important;
+                        word-break: initial !important;
+                        hyphens: initial !important;
+                    }
+                    
+                    /* REGRAS PRINT ESPECÍFICAS - APLICAM A TODOS OS DISPOSITIVOS */
                     .no-print { display: none !important; } 
-                    body { font-size: 12px; margin: 0; padding: 0; } 
-                    .container { padding: 0; max-width: none; } 
-                    .header { margin-bottom: 1rem; padding: 1.5rem; page-break-inside: avoid; }
-                    .logo-img { width: 50px; height: 50px; }
-                    .logo-text h1 { font-size: 2rem; }
-                    .header-content { flex-direction: column; align-items: center; text-align: center; gap: 1rem; }
-                    .version-info { text-align: center; }
-                    .section { page-break-inside: avoid; margin-bottom: 1rem; }
-                    .section-header { page-break-after: avoid; }
+                    body { 
+                        font-size: 12px !important; 
+                        margin: 0 !important; 
+                        padding: 0 !important; 
+                        line-height: 1.4 !important;
+                        color: #000 !important;
+                        background: white !important;
+                    } 
+                    .container { 
+                        padding: 0 !important; 
+                        max-width: none !important; 
+                        margin: 0 !important;
+                        width: 100% !important;
+                    } 
+                    .header { 
+                        margin-bottom: 1rem !important; 
+                        padding: 1.5rem !important; 
+                        page-break-inside: avoid !important;
+                        background: #f8f9fa !important;
+                    }
+                    .header-content { 
+                        display: flex !important;
+                        justify-content: space-between !important; 
+                        align-items: center !important; 
+                        flex-direction: row !important;
+                        text-align: left !important;
+                        gap: 1rem !important; 
+                    }
+                    .logo-container {
+                        display: flex !important;
+                        align-items: center !important;
+                        gap: 1rem !important;
+                    }
+                    .logo-img { 
+                        width: 50px !important; 
+                        height: 50px !important; 
+                    }
+                    .logo-text h1 { 
+                        font-size: 2rem !important; 
+                        margin: 0 !important;
+                        color: #FF5722 !important;
+                    }
+                    .subtitle {
+                        font-size: 0.9rem !important;
+                        color: #666 !important;
+                    }
+                    .version-info { 
+                        text-align: right !important; 
+                    }
+                    .version-badge {
+                        background: #FF5722 !important;
+                        color: white !important;
+                        padding: 0.25rem 0.5rem !important;
+                        border-radius: 4px !important;
+                        font-size: 0.7rem !important;
+                    }
+                    .report-info {
+                        text-align: center !important;
+                        margin: 1rem 0 !important;
+                    }
+                    .report-title {
+                        font-size: 1.5rem !important;
+                        font-weight: bold !important;
+                        color: #333 !important;
+                        margin-bottom: 0.5rem !important;
+                    }
+                    .meta {
+                        font-size: 0.8rem !important;
+                        color: #666 !important;
+                    }
+                    .section { 
+                        page-break-inside: avoid !important; 
+                        margin-bottom: 1rem !important; 
+                        border: 1px solid #dee2e6 !important;
+                        border-radius: 8px !important;
+                        overflow: visible !important;
+                    }
+                    .section-header { 
+                        page-break-after: avoid !important; 
+                        background: #f8f9fa !important;
+                        color: #495057 !important;
+                        padding: 1rem 1.5rem !important;
+                        font-size: 1.25rem !important;
+                        font-weight: 600 !important;
+                        border-bottom: 1px solid #dee2e6 !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        gap: 0.75rem !important;
+                    }
+                    .section-content { 
+                        padding: 1.5rem !important; 
+                    }
+                    .info-row { 
+                        display: flex !important;
+                        margin-bottom: 1rem !important;
+                        gap: 1rem !important;
+                        flex-direction: row !important;
+                    }
+                    .info-label { 
+                        flex: 0 0 200px !important;
+                        font-weight: 600 !important;
+                        color: #495057 !important;
+                        margin-bottom: 0 !important;
+                    }
+                    .info-value { 
+                        flex: 1 !important;
+                        padding: 0.5rem 0.75rem !important;
+                        background: #f8f9fa !important;
+                        border-radius: 4px !important;
+                        border: 1px solid #e9ecef !important;
+                    }
+                    .ambiente-item { 
+                        display: flex !important;
+                        justify-content: space-between !important;
+                        align-items: center !important;
+                        padding: 0.75rem !important;
+                        background: #f8f9fa !important;
+                        border-radius: 4px !important;
+                        margin-bottom: 0.5rem !important;
+                        flex-direction: row !important;
+                        text-align: left !important;
+                    }
+                    .observacao-item { 
+                        margin-bottom: 1rem !important;
+                        border: 1px solid #e9ecef !important;
+                        border-radius: 6px !important;
+                    }
+                    .observacao-header { 
+                        background: #f8f9fa !important;
+                        padding: 0.75rem 1rem !important;
+                        border-bottom: 1px solid #e9ecef !important;
+                        font-size: 1rem !important;
+                        font-weight: 600 !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: space-between !important;
+                    }
+                    .observacao-content { 
+                        padding: 1rem !important; 
+                    }
+                    .footer { 
+                        margin-top: 2rem !important; 
+                        padding: 1rem !important; 
+                        background: #f8f9fa !important;
+                        border-top: 2px solid #dee2e6 !important;
+                        text-align: center !important;
+                        font-size: 0.8rem !important;
+                        color: #6c757d !important;
+                        page-break-inside: avoid !important;
+                    }
+                    
+                    /* GARANTIR que ícones e elementos especiais sejam consistentes */
+                    i.fas { font-size: 1rem !important; }
+                    .status-badge { font-size: 0.7rem !important; padding: 0.2rem 0.5rem !important; }
+                    .observations-summary { background: #f8f9fa !important; padding: 1rem !important; }
                 }
                 
-                /* Media Queries - Mobile Devices */
+                /* Media Queries - Mobile Devices (SOMENTE PARA VISUALIZAÇÃO, NÃO AFETA PDF) */
                 @media screen and (max-width: 768px) {
                     body { 
                         font-size: 14px; 
@@ -1462,8 +1621,8 @@
                     }
                 }
                 
-                /* Dark mode support */
-                @media (prefers-color-scheme: dark) {
+                /* Dark mode support (somente tela, não print) */
+                @media screen and (prefers-color-scheme: dark) {
                     body { background: #1a1a1a; color: #e0e0e0; }
                     .container { background: #2d2d2d; }
                     .header { background: #333; }
@@ -1497,18 +1656,17 @@
                 Logger.error('❌ Erro ao exportar relatório:', error);
                 this.showMobileAlternatives(html);
             }
-        },
-
-        handleMobileExport(html) {
+        },        handleMobileExport(html) {
             try {
-                // Estratégia 1: Tentar window.open com configurações móveis
-                Logger.info('📱 Tentativa 1: window.open otimizado para mobile...');
+                // ESTRATÉGIA 1: Tentar window.open com HTML ORIGINAL (sem modificações)
+                Logger.info('📱 Tentativa 1: window.open com HTML original...');
                 
                 const printWindow = window.open('', '_blank', 'width=device-width,height=device-height,scrollbars=yes,resizable=yes,toolbar=no,menubar=no');
                 
                 if (printWindow && !printWindow.closed) {
-                    Logger.success('✅ Janela aberta com sucesso!');
+                    Logger.success('✅ Janela móvel aberta com sucesso!');
                     
+                    // USAR HTML ORIGINAL SEM MODIFICAÇÕES
                     printWindow.document.write(html);
                     printWindow.document.close();
                     
@@ -1528,7 +1686,7 @@
                         }
                     };
                     
-                    return; // Sucesso!
+                    return; // Sucesso com HTML original!
                 }
                 
                 throw new Error('Janela não abriu ou foi bloqueada');
@@ -1536,15 +1694,15 @@
             } catch (error) {
                 Logger.warning('⚠️ Estratégia móvel 1 falhou:', error.message);
                 
-                // Estratégia 2: Criar uma nova página em tela cheia
-                Logger.info('📱 Tentativa 2: Página dedicada para relatório...');
-                this.createMobileReportPage(html);
+                // ESTRATÉGIA 2: Criar página dedicada com HTML ORIGINAL
+                Logger.info('📱 Tentativa 2: Página dedicada com HTML original...');
+                this.createMobilePageWithOriginalHTML(html);
             }
         },
 
-        createMobileReportPage(html) {
+        createMobilePageWithOriginalHTML(html) {
             try {
-                // Criar overlay em tela cheia
+                // SOLUÇÃO: Criar iframe em tela cheia com HTML ORIGINAL
                 const overlay = document.createElement('div');
                 overlay.id = 'mobile-report-overlay';
                 overlay.style.cssText = `
@@ -1555,98 +1713,44 @@
                     height: 100%;
                     background: white;
                     z-index: 999999;
-                    overflow-y: auto;
-                    -webkit-overflow-scrolling: touch;
+                    display: flex;
+                    flex-direction: column;
                 `;
 
-                // Extrair apenas o conteúdo do body do HTML
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = html;
-                const bodyContent = tempDiv.querySelector('body')?.innerHTML || html;
-
-                // Criar conteúdo do overlay
-                overlay.innerHTML = `
-                    <div style="padding: 20px; max-width: 100%; box-sizing: border-box;">
-                        <!-- Barra de controle móvel -->
-                        <div style="position: sticky; top: 0; background: #2196F3; color: white; padding: 15px; margin: -20px -20px 20px -20px; border-radius: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
-                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                                <h3 style="margin: 0; font-size: 18px;">📄 Relatório SKBORGES</h3>
-                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                    <button onclick="this.closest('#mobile-report-overlay').style.display='none'" 
-                                            style="background: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px;">
-                                        ✕ Fechar
-                                    </button>
-                                    <button onclick="window.print()" 
-                                            style="background: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px;">
-                                        🖨️ Imprimir
-                                    </button>
-                                    <button onclick="MobileReportUtils.shareReport()" 
-                                            style="background: #FF9800; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px;">
-                                        📤 Compartilhar
-                                    </button>
-                                </div>
-                            </div>
-                            <div style="margin-top: 10px; font-size: 12px; opacity: 0.9;">
-                                💡 Dica: Use "Imprimir" para salvar como PDF ou imprimir
-                            </div>
-                        </div>
-                        
-                        <!-- Conteúdo do relatório -->
-                        <div id="mobile-report-content" style="background: white;">
-                            ${bodyContent}
-                        </div>
-                        
-                        <!-- Rodapé com instruções -->
-                        <div style="margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px; text-align: center; color: #666;">
-                            <p style="margin: 0; font-size: 14px;">
-                                📱 <strong>Como salvar este relatório:</strong><br>
-                                • Toque em "Imprimir" e escolha "Salvar como PDF"<br>
-                                • Use "Compartilhar" para enviar por email ou WhatsApp<br>
-                                • Faça capturas de tela das seções importantes
-                            </p>
+                // Barra de controle MÍNIMA que não afeta o PDF
+                const controlBar = `
+                    <div style="background: #2196F3; color: white; padding: 10px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 14px; font-weight: bold;">📄 Relatório SKBORGES</span>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="document.getElementById('report-iframe').contentWindow.print()" 
+                                    style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                🖨️ PDF
+                            </button>
+                            <button onclick="this.closest('#mobile-report-overlay').remove()" 
+                                    style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                ✕
+                            </button>
                         </div>
                     </div>
                 `;
 
-                // Adicionar utilitários para mobile
-                window.MobileReportUtils = {
-                    shareReport() {
-                        const reportContent = document.getElementById('mobile-report-content');
-                        const reportText = reportContent ? reportContent.innerText : 'Relatório SKBORGES gerado';
-                        
-                        if (navigator.share) {
-                            navigator.share({
-                                title: 'Relatório SKBORGES',
-                                text: reportText.substring(0, 200) + '...',
-                                url: window.location.href
-                            }).catch(err => {
-                                Logger.warning('Erro ao compartilhar:', err);
-                                this.fallbackShare();
-                            });
-                        } else {
-                            this.fallbackShare();
-                        }
-                    },
-                    
-                    fallbackShare() {
-                        const subject = encodeURIComponent('Relatório SKBORGES');
-                        const body = encodeURIComponent(`Segue relatório gerado pelo sistema SKBORGES.\n\nPara visualizar: ${window.location.href}`);
-                        const mailtoLink = `mailto:?subject=${subject}&body=${body}`;
-                        
-                        window.location.href = mailtoLink;
-                    }
-                };
+                // IFRAME com HTML ORIGINAL (idêntico ao desktop)
+                const iframe = `
+                    <iframe id="report-iframe" 
+                            style="width: 100%; height: 100%; border: none; flex: 1;"
+                            srcdoc="${html.replace(/"/g, '&quot;')}">
+                    </iframe>
+                `;
+
+                overlay.innerHTML = controlBar + iframe;
 
                 // Adicionar ao document
                 document.body.appendChild(overlay);
                 
-                // Scroll para o topo
-                overlay.scrollTop = 0;
-                
-                Logger.success('✅ Relatório aberto em tela cheia para mobile!');
+                Logger.success('✅ Página móvel criada com HTML original (PDF idêntico)!');
                 
             } catch (error) {
-                Logger.error('❌ Erro ao criar página móvel:', error);
+                Logger.error('❌ Erro ao criar página móvel com HTML original:', error);
                 this.showMobileAlternatives(html);
             }
         },
