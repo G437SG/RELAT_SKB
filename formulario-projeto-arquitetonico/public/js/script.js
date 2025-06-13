@@ -1326,29 +1326,44 @@
                 .observations-summary h5 { color: #FF5722; margin-bottom: 0.75rem; }
                 
                 /* Status badges */
-                .status-badge { font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 3px; font-weight: 600; margin-top: 0.25rem; }
-                .status-badge.selected { background: #d4edda; color: #155724; }
+                .status-badge { font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 3px; font-weight: 600; margin-top: 0.25rem; }                .status-badge.selected { background: #d4edda; color: #155724; }
                 .status-badge.not-selected { background: #fff3cd; color: #856404; }
                 .item-status { font-size: 0.7rem; font-weight: 600; }
                 .item-status.selected { color: #155724; }
-                .item-status.not-selected { color: #856404; }                .footer { margin-top: 3rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center; color: #6c757d; font-size: 0.8rem; }
+                .item-status.not-selected { color: #856404; }
+                .footer { margin-top: 3rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center; color: #6c757d; font-size: 0.8rem; }
                 
-                /* Media Queries - PRINT (PRIORIDADE MÁXIMA - PDF IDÊNTICO EM TODOS OS DISPOSITIVOS) */
+                /* ANULAR REGRAS MOBILE - FORÇA BRUTA */
+                @media screen and (max-width: 768px) {
+                    body { font-size: 14px; }
+                    .container { padding: 10px; }
+                    .header-content { flex-direction: column; }
+                    .info-row { flex-direction: column; }
+                    /* ESTAS REGRAS SÃO ANULADAS NO @media print ABAIXO */
+                }
+                  /* Media Queries - PRINT (PRIORIDADE MÁXIMA - PDF IDÊNTICO EM TODOS OS DISPOSITIVOS) */
                 @media print { 
-                    /* RESET: Anular TODAS as regras mobile para garantir PDF idêntico */
+                    /* RESET ABSOLUTO: Anular TODAS as regras mobile/responsive */
                     * {
-                        font-size: initial !important;
-                        padding: initial;
-                        margin: initial;
-                        flex-direction: initial !important;
-                        text-align: initial !important;
+                        font-size: inherit !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        flex-direction: row !important;
+                        text-align: left !important;
                         gap: initial !important;
-                        word-break: initial !important;
-                        hyphens: initial !important;
+                        word-break: normal !important;
+                        hyphens: none !important;
+                        box-sizing: border-box !important;
+                        -webkit-text-size-adjust: 100% !important;
+                        -webkit-print-color-adjust: exact !important;
+                        color-adjust: exact !important;
                     }
                     
-                    /* REGRAS PRINT ESPECÍFICAS - APLICAM A TODOS OS DISPOSITIVOS */
-                    .no-print { display: none !important; } 
+                    /* ANULAR TODAS as regras @media screen mobile */
+                    @media screen { * { all: unset !important; } }
+                    
+                    /* REGRAS PRINT ESPECÍFICAS - LAYOUT DESKTOP FORÇADO */
+                    .no-print { display: none !important; }
                     body { 
                         font-size: 12px !important; 
                         margin: 0 !important; 
@@ -1437,28 +1452,53 @@
                         display: flex !important;
                         align-items: center !important;
                         gap: 0.75rem !important;
-                    }
-                    .section-content { 
+                    }                    .section-content { 
                         padding: 1.5rem !important; 
                     }
-                    .info-row { 
+                    
+                    /* LAYOUT DESKTOP FORÇADO - ELEMENTOS FLEXÍVEIS */
+                    .info-row, .field-group, .ambiente-item, .checkbox-list, .escopo-group { 
                         display: flex !important;
+                        flex-direction: row !important;
                         margin-bottom: 1rem !important;
                         gap: 1rem !important;
-                        flex-direction: row !important;
+                        align-items: flex-start !important;
+                        justify-content: flex-start !important;
+                        text-align: left !important;
+                        width: 100% !important;
                     }
-                    .info-label { 
+                    
+                    /* FORÇAR LAYOUT HORIZONTAL PARA CAMPOS */
+                    .field, .info-item, .ambiente-card {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        align-items: center !important;
+                        gap: 1rem !important;
+                        margin-bottom: 0.75rem !important;
+                        width: 100% !important;
+                    }
+                    
+                    /* LABELS E VALUES - LAYOUT DESKTOP */
+                    .info-label, .field-label { 
                         flex: 0 0 200px !important;
                         font-weight: 600 !important;
                         color: #495057 !important;
                         margin-bottom: 0 !important;
+                        margin-right: 1rem !important;
+                        text-align: left !important;
+                        white-space: nowrap !important;
+                        font-size: 0.9rem !important;
                     }
-                    .info-value { 
+                    
+                    .info-value, .field-value { 
                         flex: 1 !important;
                         padding: 0.5rem 0.75rem !important;
                         background: #f8f9fa !important;
                         border-radius: 4px !important;
                         border: 1px solid #e9ecef !important;
+                        font-size: 0.9rem !important;
+                        line-height: 1.4 !important;
+                        word-wrap: break-word !important;
                     }
                     .ambiente-item { 
                         display: flex !important;
@@ -1658,35 +1698,54 @@
             }
         },        handleMobileExport(html) {
             try {
-                // ESTRATÉGIA 1: Tentar window.open com HTML ORIGINAL (sem modificações)
-                Logger.info('📱 Tentativa 1: window.open com HTML original...');
+                Logger.info('📱 Iniciando exportação mobile com HTML desktop forçado...');
                 
-                const printWindow = window.open('', '_blank', 'width=device-width,height=device-height,scrollbars=yes,resizable=yes,toolbar=no,menubar=no');
+                // CORREÇÃO: Forçar viewport desktop no HTML mobile
+                const desktopHTML = html.replace(
+                    /<meta name="viewport"[^>]*>/i,
+                    '<meta name="viewport" content="width=1024, initial-scale=1.0, shrink-to-fit=no">'
+                );
+                
+                // ESTRATÉGIA 1: window.open com HTML desktop forçado
+                Logger.info('📱 Tentativa 1: window.open com viewport desktop...');
+                
+                const printWindow = window.open('', '_blank', 'width=1024,height=768,scrollbars=yes,resizable=yes,toolbar=no,menubar=no');
                 
                 if (printWindow && !printWindow.closed) {
-                    Logger.success('✅ Janela móvel aberta com sucesso!');
+                    Logger.success('✅ Janela móvel aberta - injetando HTML desktop!');
                     
-                    // USAR HTML ORIGINAL SEM MODIFICAÇÕES
-                    printWindow.document.write(html);
+                    // Injetar HTML com viewport desktop
+                    printWindow.document.write(desktopHTML);
                     printWindow.document.close();
                     
-                    // Aguardar carregamento e focar
+                    // Aguardar carregamento completo
                     printWindow.onload = () => {
+                        Logger.info('📄 HTML desktop carregado no mobile');
                         printWindow.focus();
                         
-                        // Para iOS: aguardar um pouco antes de tentar imprimir
-                        if (Utils.isIOS()) {
-                            setTimeout(() => {
-                                try {
+                        // Aguardar renderização antes de tentar imprimir
+                        setTimeout(() => {
+                            try {
+                                if (Utils.isIOS()) {
+                                    // iOS: aguardar mais tempo e tentar impressão
+                                    setTimeout(() => {
+                                        try {
+                                            printWindow.print();
+                                        } catch (e) {
+                                            Logger.warning('iOS: Impressão manual necessária');
+                                        }
+                                    }, 1500);
+                                } else {
+                                    // Android: tentar impressão direta
                                     printWindow.print();
-                                } catch (e) {
-                                    Logger.warning('Falha na impressão automática no iOS');
                                 }
-                            }, 1000);
-                        }
+                            } catch (e) {
+                                Logger.warning('Impressão automática falhou - manual necessária');
+                            }
+                        }, 800);
                     };
                     
-                    return; // Sucesso com HTML original!
+                    return; // Sucesso!
                 }
                 
                 throw new Error('Janela não abriu ou foi bloqueada');
@@ -1694,17 +1753,25 @@
             } catch (error) {
                 Logger.warning('⚠️ Estratégia móvel 1 falhou:', error.message);
                 
-                // ESTRATÉGIA 2: Criar página dedicada com HTML ORIGINAL
-                Logger.info('📱 Tentativa 2: Página dedicada com HTML original...');
-                this.createMobilePageWithOriginalHTML(html);
+                // ESTRATÉGIA 2: Página fullscreen com HTML desktop
+                Logger.info('📱 Tentativa 2: Página fullscreen com HTML desktop...');
+                this.createMobileDesktopPage(html);
             }
         },
 
-        createMobilePageWithOriginalHTML(html) {
+        createMobileDesktopPage(html) {
             try {
-                // SOLUÇÃO: Criar iframe em tela cheia com HTML ORIGINAL
+                Logger.info('📱 Criando página desktop no mobile...');
+                
+                // Forçar viewport desktop
+                const desktopHTML = html.replace(
+                    /<meta name="viewport"[^>]*>/i,
+                    '<meta name="viewport" content="width=1024, initial-scale=1.0, shrink-to-fit=no">'
+                );
+                
+                // Criar overlay fullscreen
                 const overlay = document.createElement('div');
-                overlay.id = 'mobile-report-overlay';
+                overlay.id = 'mobile-desktop-overlay';
                 overlay.style.cssText = `
                     position: fixed;
                     top: 0;
@@ -1717,28 +1784,28 @@
                     flex-direction: column;
                 `;
 
-                // Barra de controle MÍNIMA que não afeta o PDF
+                // Barra de controle compacta
                 const controlBar = `
-                    <div style="background: #2196F3; color: white; padding: 10px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 14px; font-weight: bold;">📄 Relatório SKBORGES</span>
-                        <div style="display: flex; gap: 8px;">
-                            <button onclick="document.getElementById('report-iframe').contentWindow.print()" 
-                                    style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
-                                🖨️ PDF
+                    <div style="background: #FF5722; color: white; padding: 8px 12px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+                        <span style="font-weight: bold;">📄 SKBORGES (Modo Desktop)</span>
+                        <div style="display: flex; gap: 6px;">
+                            <button onclick="document.getElementById('desktop-iframe').contentWindow.print()" 
+                                    style="background: #4CAF50; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">
+                                🖨️ IMPRIMIR PDF
                             </button>
-                            <button onclick="this.closest('#mobile-report-overlay').remove()" 
-                                    style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                            <button onclick="this.closest('#mobile-desktop-overlay').remove()" 
+                                    style="background: #f44336; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">
                                 ✕
                             </button>
                         </div>
                     </div>
                 `;
 
-                // IFRAME com HTML ORIGINAL (idêntico ao desktop)
+                // iframe com HTML desktop forçado
                 const iframe = `
-                    <iframe id="report-iframe" 
-                            style="width: 100%; height: 100%; border: none; flex: 1;"
-                            srcdoc="${html.replace(/"/g, '&quot;')}">
+                    <iframe id="desktop-iframe" 
+                            style="width: 100%; height: 100%; border: none; flex: 1; background: white;"
+                            srcdoc="${desktopHTML.replace(/"/g, '&quot;')}">
                     </iframe>
                 `;
 
@@ -1747,10 +1814,10 @@
                 // Adicionar ao document
                 document.body.appendChild(overlay);
                 
-                Logger.success('✅ Página móvel criada com HTML original (PDF idêntico)!');
+                Logger.success('✅ Página desktop criada no mobile - PDF será idêntico!');
                 
             } catch (error) {
-                Logger.error('❌ Erro ao criar página móvel com HTML original:', error);
+                Logger.error('❌ Erro ao criar página desktop no mobile:', error);
                 this.showMobileAlternatives(html);
             }
         },
