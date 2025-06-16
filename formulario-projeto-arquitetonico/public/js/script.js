@@ -550,7 +550,7 @@
                 console.log('  - Ambientes:', formData.observacaoAmbientes);
                 console.log('  - Prazos:', formData.observacaoPrazos);
                 console.log('  - Final:', formData.observacaoFinal);
-                console.log('🚨 ===========================');
+                console.log('🚨 ============================');
 
                 Logger.info('🏗️ Criando HTML do relatório...');
                 const html = this.createPrintableHTML(formData);
@@ -823,8 +823,18 @@
                             </div>
                         </div>
                     </div>                    <div class="container">
-                        ${this._createSection('Informações do Cliente', 'fa-user', clientSection)}
-                        ${this._createSection('Informações do Projeto', 'fa-building', projectSection)}
+                        <div class="section">
+                            <div class="section-header">
+                                <i class="fas fa-users"></i>
+                                <h2>INFORMAÇÕES GERAIS</h2>
+                            </div>
+                            <div class="section-content">
+                                <div class="two-column-section">
+                                    ${clientSection}
+                                    ${projectSection}
+                                </div>
+                            </div>
+                        </div>
                         ${this._createSection('Escopo do Projeto', 'fa-list-check', scopeSection)}
                         ${this._createSection('Ambientes e Necessidades', 'fa-home', environmentsSection)}
                         ${this._createSection('Cronograma do Projeto', 'fa-clock', timelineSection)}
@@ -849,47 +859,48 @@
             } catch (error) {
                 Logger.error('❌ Erro crítico na criação do HTML:', error);
                 throw new Error(`Falha na geração do HTML do relatório: ${error.message}`);
-            }
-        },generateClientSection(data) {
-            console.log('👤 Gerando seção completa do cliente');
+            }        },generateClientSection(data) {
+            console.log('👤 Gerando seção completa do cliente em formato lista');
             
+            const clientFields = [
+                { key: 'nomeCliente', label: 'Nome Completo', required: true },
+                { key: 'cnpjCpf', label: 'CNPJ/CPF', required: false },
+                { key: 'telefone', label: 'Telefone', required: true },
+                { key: 'email', label: 'E-mail', required: false },
+                { key: 'cep', label: 'CEP', required: false },
+                { key: 'endereco', label: 'Endereço Completo', required: false },
+                { key: 'responsavelObra', label: 'Responsável pela Obra', required: false },
+                { key: 'numeroResponsavel', label: 'Tel. Responsável', required: false }
+            ];
+
+            let clientList = '';
+            clientFields.forEach(field => {
+                const value = data[field.key] || '';
+                const isEmpty = !value.trim();
+                const requiredMark = field.required ? '*' : '';
+                const displayValue = isEmpty ? '(Não informado)' : value;
+                const itemClass = isEmpty ? 'info-item empty' : 'info-item filled';
+                
+                clientList += `
+                    <div class="${itemClass}">
+                        <span class="info-label">${field.label}${requiredMark}:</span>
+                        <span class="info-value">${displayValue}</span>
+                    </div>
+                `;
+            });
+
             return `
-                <div class="field-group">
-                    <div class="field ${!data.nomeCliente ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">Nome Completo *</div>
-                        <div class="field-value ${!data.nomeCliente ? 'empty' : ''}">${data.nomeCliente || '(Não informado)'}</div>
+                <div class="column-left">
+                    <h3 class="section-title">
+                        <i class="fas fa-user"></i>
+                        INFORMAÇÕES PESSOAIS
+                    </h3>
+                    <div class="info-list">
+                        ${clientList}
                     </div>
-                    <div class="field ${!data.cnpjCpf ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">CNPJ/CPF</div>
-                        <div class="field-value ${!data.cnpjCpf ? 'empty' : ''}">${data.cnpjCpf || '(Não informado)'}</div>
-                    </div>
-                    <div class="field ${!data.telefone ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">Telefone *</div>
-                        <div class="field-value ${!data.telefone ? 'empty' : ''}">${data.telefone || '(Não informado)'}</div>
-                    </div>
-                    <div class="field ${!data.email ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">E-mail</div>
-                        <div class="field-value ${!data.email ? 'empty' : ''}">${data.email || '(Não informado)'}</div>
-                    </div>
-                    <div class="field ${!data.cep ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">CEP</div>
-                        <div class="field-value ${!data.cep ? 'empty' : ''}">${data.cep || '(Não informado)'}</div>
-                    </div>
-                    <div class="field ${!data.endereco ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">Endereço Completo</div>
-                        <div class="field-value ${!data.endereco ? 'empty' : ''}">${data.endereco || '(Não informado)'}</div>
-                    </div>
-                    <div class="field ${!data.responsavelObra ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">Responsável pela Obra</div>
-                        <div class="field-value ${!data.responsavelObra ? 'empty' : ''}">${data.responsavelObra || '(Não informado)'}</div>
-                    </div>
-                    <div class="field ${!data.numeroResponsavel ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">Tel. Responsável</div>
-                        <div class="field-value ${!data.numeroResponsavel ? 'empty' : ''}">${data.numeroResponsavel || '(Não informado)'}</div>
-                    </div>
-                </div>`;
-        },        generateProjectSection(data) {
-            console.log('🏗️ Gerando seção completa do projeto');
+                </div>
+            `;        },        generateProjectSection(data) {
+            console.log('🏗️ Gerando seção completa do projeto em formato lista');
             
             // Determinar qual tipo de imóvel foi selecionado
             let tipoImovelCompleto = data.tipoImovel || '(Não selecionado)';
@@ -899,29 +910,44 @@
                 tipoImovelCompleto = 'Outro: (Não especificado)';
             }
 
+            const projectFields = [
+                { key: 'nomeProjeto', label: 'Nome do Projeto', required: true },
+                { key: 'metragemLote', label: 'Metragem do Lote', required: false, unit: 'm²' },
+                { key: 'areaConstruida', label: 'Área Construída', required: false, unit: 'm²' },
+                { key: 'tipoImovel', label: 'Tipo de Imóvel', required: true, value: tipoImovelCompleto },
+                { key: 'tipoProjeto', label: 'Tipo de Projeto', required: true }
+            ];
+
+            let projectList = '';
+            projectFields.forEach(field => {
+                const value = field.value || data[field.key] || '';
+                const isEmpty = !value.trim();
+                const requiredMark = field.required ? '*' : '';
+                
+                let displayValue = isEmpty ? '(Não informado)' : value;
+                if (!isEmpty && field.unit) displayValue = displayValue + ' ' + field.unit;
+                
+                const itemClass = isEmpty ? 'info-item empty' : 'info-item filled';
+                
+                projectList += `
+                    <div class="${itemClass}">
+                        <span class="info-label">${field.label}${requiredMark}:</span>
+                        <span class="info-value">${displayValue}</span>
+                    </div>
+                `;
+            });
+
             return `
-                <div class="field-group">
-                    <div class="field ${!data.nomeProjeto ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">Nome do Projeto *</div>
-                        <div class="field-value ${!data.nomeProjeto ? 'empty' : ''}">${data.nomeProjeto || '(Não informado)'}</div>
+                <div class="column-right">
+                    <h3 class="section-title">
+                        <i class="fas fa-building"></i>
+                        INFORMAÇÕES DO PROJETO
+                    </h3>
+                    <div class="info-list">
+                        ${projectList}
                     </div>
-                    <div class="field ${!data.metragemLote ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">Metragem do Lote</div>
-                        <div class="field-value ${!data.metragemLote ? 'empty' : ''}">${data.metragemLote ? data.metragemLote + ' m²' : '(Não informado)'}</div>
-                    </div>
-                    <div class="field ${!data.areaConstruida ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">Área Construída</div>
-                        <div class="field-value ${!data.areaConstruida ? 'empty' : ''}">${data.areaConstruida ? data.areaConstruida + ' m²' : '(Não informado)'}</div>
-                    </div>
-                    <div class="field ${!data.tipoImovel ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">Tipo de Imóvel *</div>
-                        <div class="field-value ${!data.tipoImovel ? 'empty' : ''}">${tipoImovelCompleto}</div>
-                    </div>
-                    <div class="field ${!data.tipoProjeto ? 'field-empty' : 'field-filled'}">
-                        <div class="field-label">Tipo de Projeto *</div>
-                        <div class="field-value ${!data.tipoProjeto ? 'empty' : ''}">${data.tipoProjeto || '(Não selecionado)'}</div>
-                    </div>
-                </div>`;
+                </div>
+            `;
         },        generateScopeSection(data) {
             console.log('📐 Gerando seção ULTRA-COMPLETA do escopo');
             console.log('📐 Garantindo que TODAS as opções apareçam, selecionadas ou não');
@@ -1220,459 +1246,223 @@
             console.log(`💭 HTML gerado (${html.length} caracteres):`, html.substring(0, 200) + '...');
             console.log('💭 === FIM DA GERAÇÃO DE OBSERVAÇÕES ===');
             
-            return html;
-        },
-
-        getReportStyles() {
+            return html;        },        getReportStyles() {
             return `
-                * { margin: 0; padding: 0; box-sizing: border-box; }
-                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background: white; }
-                .container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }                .header { background: linear-gradient(135deg, #FF5722, #FF7043); color: white; padding: 2rem; margin-bottom: 2rem; }
-                .header-content { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
-                .logo-container { display: flex; align-items: center; gap: 1rem; }
-                .logo-img { width: 60px; height: 60px; object-fit: contain; background: white; border-radius: 8px; padding: 8px; }
-                .logo-text h1 { font-size: 2.5rem; margin: 0; font-weight: 700; }
-                .logo-text .subtitle { font-size: 1rem; opacity: 0.9; margin-top: 0.25rem; }
-                .version-info { text-align: right; }
-                .version-badge { background: rgba(255, 255, 255, 0.2); padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600; }
-                .report-info { text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.3); padding-top: 1.5rem; }
-                .report-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem; }
-                .meta { font-size: 0.9rem; opacity: 0.8; line-height: 1.4; }
-                .section { margin-bottom: 2rem; border: 1px solid #e9ecef; border-radius: 8px; overflow: hidden; }
-                .section-header { background: #37474F; color: white; padding: 1rem 1.5rem; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
-                .section-content { padding: 1.5rem; background: white; }
-                .field-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-                .field { margin-bottom: 0.75rem; }
-                .field-label { font-weight: 600; color: #495057; margin-bottom: 0.25rem; font-size: 0.9rem; }
-                .field-value { color: #212529; font-size: 0.95rem; padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; }
-                .field-value.empty { color: #6c757d; font-style: italic; }
-                
-                /* Estilos para Escopo */
-                .escopo-group { margin-bottom: 2rem; }
-                .escopo-subtitle { color: #37474F; font-size: 1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-                .checkbox-list { display: grid; gap: 0.75rem; margin-bottom: 1rem; }
-                .checkbox-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; border-radius: 6px; border: 1px solid #e9ecef; }
-                .checkbox-item.checked { background: #f8f9fa; border-color: #FF5722; }
-                .checkbox-item.unchecked { background: #ffffff; border-color: #dee2e6; }
-                .checkbox-icon { font-size: 1.1rem; margin-top: 0.1rem; }
-                .checkbox-content strong { display: block; color: #212529; font-size: 0.9rem; }
-                .checkbox-content small { color: #6c757d; font-size: 0.8rem; }
-                
-                /* Sub-opções */
-                .sub-options { margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 6px; }
-                .sub-title { font-size: 0.85rem; font-weight: 600; color: #495057; margin-bottom: 0.75rem; }
-                .sub-checkbox-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; }
-                .sub-checkbox-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.6rem; border-radius: 4px; font-size: 0.8rem; }
-                .sub-checkbox-item.checked { background: #e8f5e8; color: #155724; }
-                .sub-checkbox-item.unchecked { background: #fff3cd; color: #856404; }
-                
-                .list-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin: 1rem 0; }
-                .list-item { padding: 0.5rem 0.75rem; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #FF5722; font-size: 0.9rem; }
-                .ambiente { background: #f8f9fa; border-radius: 6px; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid #FF5722; }
-                .ambiente-title { font-weight: 600; color: #FF5722; margin-bottom: 0.5rem; }
-                .ambiente-desc { color: #495057; font-size: 0.9rem; line-height: 1.5; }
-                .ambiente-desc.empty { color: #6c757d; font-style: italic; }                .prazos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
-                .prazo-item { text-align: center; padding: 1rem; border-radius: 6px; border: 1px solid #e9ecef; }
-                .prazo-item.filled { background: #f8f9fa; border-color: #FF5722; }
-                .prazo-item.empty { background: #fff3cd; border-color: #ffc107; }
-                .prazo-icon { font-size: 1.2rem; color: #FF5722; margin-bottom: 0.5rem; }
-                .prazo-value { font-size: 1.5rem; font-weight: 700; color: #FF5722; margin-bottom: 0.25rem; }
-                .prazo-item.empty .prazo-value { color: #856404; font-size: 1.2rem; }
-                .prazo-label { font-size: 0.8rem; color: #6c757d; margin-bottom: 0.25rem; font-weight: 600; }
-                .prazo-unit { font-size: 0.75rem; color: #6c757d; }
-                .prazo-unit.empty { color: #856404; font-style: italic; }
-                .prazo-total { grid-column: span 2; background: #FF5722 !important; color: white !important; border-color: #FF5722 !important; }
-                .prazo-total.empty { background: #6c757d !important; }
-                .prazo-total .prazo-icon, .prazo-total .prazo-value, .prazo-total .prazo-label, .prazo-total .prazo-unit { color: white !important; }
-                .prazo-total.empty .prazo-value { color: #f8f9fa !important; }
-                .observacao { margin-bottom: 1rem; padding: 1rem; border-radius: 6px; border: 1px solid #e9ecef; }
-                .observacao.filled { background: #f8f9fa; }
-                .observacao.empty { background: #fff3cd; }
-                .observacao-title { font-weight: 600; color: #495057; margin-bottom: 0.5rem; font-size: 0.9rem; }
-                .observacao-text { color: #212529; font-size: 0.9rem; line-height: 1.5; }
-                .observacao.empty .observacao-text { color: #856404; font-style: italic; }
-                  /* Estilos específicos para ambientes e observações */
-                .environments-list { margin-bottom: 1.5rem; }
-                .ambiente-card { border: 1px solid #e9ecef; border-radius: 6px; margin-bottom: 1rem; overflow: hidden; }
-                .ambiente-card.filled-ambiente { border-left: 4px solid #FF5722; }
-                .ambiente-card.empty-ambiente { border-left: 4px solid #ffc107; background: #fff3cd; }
-                .ambiente-header { background: #f8f9fa; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.5rem; }
-                .ambiente-number { background: #FF5722; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; }
-                .ambiente-label { font-weight: 600; color: #495057; }
-                .ambiente-content { padding: 1rem; }
-                .ambiente-name, .ambiente-needs { margin-bottom: 0.75rem; }
-                .ambiente-title, .ambiente-desc { margin-top: 0.5rem; font-size: 0.9rem; }
-                .ambiente-title.filled, .ambiente-desc.filled { color: #212529; }
-                .ambiente-title.empty, .ambiente-desc.empty { color: #6c757d; font-style: italic; }
-                .ambiente-status { padding: 0.5rem 1rem; background: #f8f9fa; text-align: center; }
-                .status-indicator.configured { color: #155724; font-weight: 600; }
-                .status-indicator.pending { color: #856404; font-weight: 600; }
-                .environments-summary { margin-top: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 6px; }
-                .environments-summary h5 { color: #FF5722; margin-bottom: 0.75rem; }
-                .summary-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; }
-                .observations-grid { display: grid; gap: 1rem; }
-                .observacao-card { border: 1px solid #e9ecef; border-radius: 6px; overflow: hidden; }
-                .observacao-card.filled { border-left: 4px solid #FF5722; }
-                .observacao-card.empty { border-left: 4px solid #ffc107; background: #fff3cd; }
-                .observacao-header { background: #f8f9fa; padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; }
-                .observacao-icon { font-size: 1.1rem; }
-                .observacao-title { font-weight: 600; color: #495057; }
-                .observacao-status.has-content { color: #155724; font-size: 0.8rem; font-weight: 600; }
-                .observacao-status.no-content { color: #856404; font-size: 0.8rem; font-weight: 600; }
-                .observacao-content { padding: 1rem; }
-                .observacao-text.filled { color: #212529; }
-                .observacao-text.empty { color: #6c757d; font-style: italic; }
-                .observations-summary { margin-top: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 6px; }
-                .observations-summary h5 { color: #FF5722; margin-bottom: 0.75rem; }
-                
-                /* Status badges */
-                .status-badge { font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 3px; font-weight: 600; margin-top: 0.25rem; }                .status-badge.selected { background: #d4edda; color: #155724; }
-                .status-badge.not-selected { background: #fff3cd; color: #856404; }
-                .item-status { font-size: 0.7rem; font-weight: 600; }
-                .item-status.selected { color: #155724; }
-                .item-status.not-selected { color: #856404; }
-                .footer { margin-top: 3rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center; color: #6c757d; font-size: 0.8rem; }
-                
-                /* ANULAR REGRAS MOBILE - FORÇA BRUTA */
-                @media screen and (max-width: 768px) {
-                    body { font-size: 14px; }
-                    .container { padding: 10px; }
-                    .header-content { flex-direction: column; }
-                    .info-row { flex-direction: column; }
-                    /* ESTAS REGRAS SÃO ANULADAS NO @media print ABAIXO */
+                <style>
+                /* CSS DESKTOP FORÇADO - GARANTIR PDF IDÊNTICO EM TODOS DISPOSITIVOS */
+                * { 
+                    margin: 0 !important; 
+                    padding: 0 !important; 
+                    box-sizing: border-box !important; 
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
                 }
-                  /* Media Queries - PRINT (PRIORIDADE MÁXIMA - PDF IDÊNTICO EM TODOS OS DISPOSITIVOS) */
-                @media print { 
-                    /* RESET ABSOLUTO: Anular TODAS as regras mobile/responsive */
-                    * {
-                        font-size: inherit !important;
-                        padding: 0 !important;
-                        margin: 0 !important;
-                        flex-direction: row !important;
-                        text-align: left !important;
-                        gap: initial !important;
-                        word-break: normal !important;
-                        hyphens: none !important;
-                        box-sizing: border-box !important;
-                        -webkit-text-size-adjust: 100% !important;
-                        -webkit-print-color-adjust: exact !important;
-                        color-adjust: exact !important;
+                
+                body { 
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; 
+                    font-size: 12px !important;
+                    line-height: 1.6 !important; 
+                    color: #333 !important; 
+                    background: white !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    width: 100% !important;
+                }
+                
+                .container { 
+                    max-width: none !important; 
+                    margin: 0 auto !important; 
+                    padding: 0 !important; 
+                    width: 100% !important;
+                }
+                
+                /* CABEÇALHO - LAYOUT DESKTOP FIXO */
+                .header { 
+                    background: linear-gradient(135deg, #FF5722, #FF7043) !important; 
+                    color: white !important; 
+                    padding: 2rem !important; 
+                    margin-bottom: 2rem !important; 
+                }
+                
+                .header-content { 
+                    display: flex !important; 
+                    justify-content: space-between !important; 
+                    align-items: flex-start !important; 
+                    margin-bottom: 1.5rem !important;
+                    flex-direction: row !important;
+                    gap: 1rem !important;
+                }
+                
+                .logo-container { 
+                    display: flex !important; 
+                    align-items: center !important; 
+                    gap: 1rem !important; 
+                }
+                
+                .logo-img { 
+                    width: 60px !important; 
+                    height: 60px !important; 
+                    object-fit: contain !important; 
+                    background: white !important; 
+                    border-radius: 8px !important; 
+                    padding: 8px !important; 
+                }
+                
+                .logo-text h1 { 
+                    font-size: 2.5rem !important; 
+                    margin: 0 !important; 
+                    font-weight: 700 !important; 
+                }
+                
+                .logo-text .subtitle { 
+                    font-size: 1rem !important; 
+                    opacity: 0.9 !important; 
+                    margin-top: 0.25rem !important; 
+                }
+                
+                .version-info { 
+                    text-align: right !important; 
+                }
+                
+                /* LAYOUT EM DUAS COLUNAS */
+                .two-column-section { 
+                    display: flex !important; 
+                    gap: 30px !important; 
+                    margin-bottom: 25px !important; 
+                    page-break-inside: avoid !important;
+                    flex-direction: row !important;
+                }
+                
+                .column-left, .column-right { 
+                    flex: 1 !important; 
+                    min-width: 0 !important; 
+                }
+                
+                .column-left { 
+                    border-right: 2px solid #FF6B35 !important; 
+                    padding-right: 25px !important; 
+                }
+                
+                .column-right { 
+                    padding-left: 5px !important; 
+                }
+                
+                .section-title { 
+                    font-size: 1.2rem !important; 
+                    font-weight: 700 !important; 
+                    color: #FF5722 !important; 
+                    margin-bottom: 15px !important; 
+                    padding-bottom: 8px !important; 
+                    border-bottom: 2px solid #FF5722 !important; 
+                    display: flex !important; 
+                    align-items: center !important; 
+                    gap: 8px !important; 
+                }
+                
+                .info-list { 
+                    display: flex !important; 
+                    flex-direction: column !important; 
+                    gap: 8px !important; 
+                }
+                
+                .info-item { 
+                    display: flex !important; 
+                    align-items: flex-start !important; 
+                    padding: 8px 0 !important; 
+                    border-bottom: 1px solid #e9ecef !important; 
+                }
+                
+                .info-item.filled { 
+                    background: rgba(40, 167, 69, 0.05) !important; 
+                }
+                
+                .info-item.empty { 
+                    background: rgba(220, 53, 69, 0.05) !important; 
+                }
+                
+                .info-label { 
+                    flex: 0 0 140px !important; 
+                    font-weight: 600 !important; 
+                    color: #37474F !important; 
+                    font-size: 11px !important; 
+                    margin-right: 12px !important; 
+                }
+                
+                .info-value { 
+                    flex: 1 !important; 
+                    color: #333 !important; 
+                    font-size: 11px !important; 
+                    word-break: break-word !important; 
+                }
+                
+                .info-item.empty .info-value { 
+                    color: #999 !important; 
+                    font-style: italic !important; 
+                }
+                
+                /* SEÇÕES */
+                .section { 
+                    margin-bottom: 2rem !important; 
+                    border: 1px solid #e9ecef !important; 
+                    border-radius: 8px !important; 
+                    overflow: hidden !important; 
+                }
+                
+                .section-header { 
+                    background: #37474F !important; 
+                    color: white !important; 
+                    padding: 1rem 1.5rem !important; 
+                    display: flex !important; 
+                    align-items: center !important; 
+                    gap: 0.75rem !important; 
+                }
+                
+                .section-content { 
+                    padding: 1.5rem !important; 
+                    background: white !important; 
+                }
+                
+                /* PRINT STYLES */
+                @media print {
+                    * { 
+                        -webkit-print-color-adjust: exact !important; 
+                        print-color-adjust: exact !important; 
                     }
-                    
-                    /* ANULAR TODAS as regras @media screen mobile */
-                    @media screen { * { all: unset !important; } }
-                    
-                    /* REGRAS PRINT ESPECÍFICAS - LAYOUT DESKTOP FORÇADO */
-                    .no-print { display: none !important; }
                     body { 
-                        font-size: 12px !important; 
+                        font-size: 10px !important; 
                         margin: 0 !important; 
-                        padding: 0 !important; 
-                        line-height: 1.4 !important;
-                        color: #000 !important;
-                        background: white !important;
-                    } 
-                    .container { 
-                        padding: 0 !important; 
-                        max-width: none !important; 
-                        margin: 0 !important;
                         width: 100% !important;
-                    } 
-                    .header { 
-                        margin-bottom: 1rem !important; 
-                        padding: 1.5rem !important; 
-                        page-break-inside: avoid !important;
-                        background: #f8f9fa !important;
                     }
-                    .header-content { 
-                        display: flex !important;
-                        justify-content: space-between !important; 
-                        align-items: center !important; 
-                        flex-direction: row !important;
-                        text-align: left !important;
-                        gap: 1rem !important; 
-                    }
-                    .logo-container {
-                        display: flex !important;
-                        align-items: center !important;
-                        gap: 1rem !important;
-                    }
-                    .logo-img { 
-                        width: 50px !important; 
-                        height: 50px !important; 
-                    }
-                    .logo-text h1 { 
-                        font-size: 2rem !important; 
-                        margin: 0 !important;
-                        color: #FF5722 !important;
-                    }
-                    .subtitle {
-                        font-size: 0.9rem !important;
-                        color: #666 !important;
-                    }
-                    .version-info { 
-                        text-align: right !important; 
-                    }
-                    .version-badge {
-                        background: #FF5722 !important;
-                        color: white !important;
-                        padding: 0.25rem 0.5rem !important;
-                        border-radius: 4px !important;
-                        font-size: 0.7rem !important;
-                    }
-                    .report-info {
-                        text-align: center !important;
-                        margin: 1rem 0 !important;
-                    }
-                    .report-title {
-                        font-size: 1.5rem !important;
-                        font-weight: bold !important;
-                        color: #333 !important;
-                        margin-bottom: 0.5rem !important;
-                    }
-                    .meta {
-                        font-size: 0.8rem !important;
-                        color: #666 !important;
-                    }
-                    .section { 
+                    .two-column-section { 
+                        display: flex !important; 
+                        flex-direction: row !important; 
+                        gap: 20px !important; 
                         page-break-inside: avoid !important; 
-                        margin-bottom: 1rem !important; 
-                        border: 1px solid #dee2e6 !important;
-                        border-radius: 8px !important;
-                        overflow: visible !important;
                     }
-                    .section-header { 
-                        page-break-after: avoid !important; 
-                        background: #f8f9fa !important;
-                        color: #495057 !important;
-                        padding: 1rem 1.5rem !important;
-                        font-size: 1.25rem !important;
-                        font-weight: 600 !important;
-                        border-bottom: 1px solid #dee2e6 !important;
-                        display: flex !important;
-                        align-items: center !important;
-                        gap: 0.75rem !important;
-                    }                    .section-content { 
-                        padding: 1.5rem !important; 
+                    .column-left { 
+                        border-right: 1px solid #FF6B35 !important; 
+                        padding-right: 15px !important; 
                     }
-                    
-                    /* LAYOUT DESKTOP FORÇADO - ELEMENTOS FLEXÍVEIS */
-                    .info-row, .field-group, .ambiente-item, .checkbox-list, .escopo-group { 
-                        display: flex !important;
-                        flex-direction: row !important;
-                        margin-bottom: 1rem !important;
-                        gap: 1rem !important;
-                        align-items: flex-start !important;
-                        justify-content: flex-start !important;
-                        text-align: left !important;
-                        width: 100% !important;
+                    .info-item { 
+                        break-inside: avoid !important; 
                     }
-                    
-                    /* FORÇAR LAYOUT HORIZONTAL PARA CAMPOS */
-                    .field, .info-item, .ambiente-card {
-                        display: flex !important;
-                        flex-direction: row !important;
-                        align-items: center !important;
-                        gap: 1rem !important;
-                        margin-bottom: 0.75rem !important;
-                        width: 100% !important;
+                    .header {
+                        background: linear-gradient(135deg, #FF5722, #FF7043) !important;
                     }
-                    
-                    /* LABELS E VALUES - LAYOUT DESKTOP */
-                    .info-label, .field-label { 
-                        flex: 0 0 200px !important;
-                        font-weight: 600 !important;
-                        color: #495057 !important;
-                        margin-bottom: 0 !important;
-                        margin-right: 1rem !important;
-                        text-align: left !important;
-                        white-space: nowrap !important;
-                        font-size: 0.9rem !important;
-                    }
-                    
-                    .info-value, .field-value { 
-                        flex: 1 !important;
-                        padding: 0.5rem 0.75rem !important;
-                        background: #f8f9fa !important;
-                        border-radius: 4px !important;
-                        border: 1px solid #e9ecef !important;
-                        font-size: 0.9rem !important;
-                        line-height: 1.4 !important;
-                        word-wrap: break-word !important;
-                    }
-                    .ambiente-item { 
-                        display: flex !important;
-                        justify-content: space-between !important;
-                        align-items: center !important;
-                        padding: 0.75rem !important;
-                        background: #f8f9fa !important;
-                        border-radius: 4px !important;
-                        margin-bottom: 0.5rem !important;
-                        flex-direction: row !important;
-                        text-align: left !important;
-                    }
-                    .observacao-item { 
-                        margin-bottom: 1rem !important;
-                        border: 1px solid #e9ecef !important;
-                        border-radius: 6px !important;
-                    }
-                    .observacao-header { 
-                        background: #f8f9fa !important;
-                        padding: 0.75rem 1rem !important;
-                        border-bottom: 1px solid #e9ecef !important;
-                        font-size: 1rem !important;
-                        font-weight: 600 !important;
-                        display: flex !important;
-                        align-items: center !important;
-                        justify-content: space-between !important;
-                    }
-                    .observacao-content { 
-                        padding: 1rem !important; 
-                    }
-                    .footer { 
-                        margin-top: 2rem !important; 
-                        padding: 1rem !important; 
-                        background: #f8f9fa !important;
-                        border-top: 2px solid #dee2e6 !important;
-                        text-align: center !important;
-                        font-size: 0.8rem !important;
-                        color: #6c757d !important;
-                        page-break-inside: avoid !important;
-                    }
-                    
-                    /* GARANTIR que ícones e elementos especiais sejam consistentes */
-                    i.fas { font-size: 1rem !important; }
-                    .status-badge { font-size: 0.7rem !important; padding: 0.2rem 0.5rem !important; }
-                    .observations-summary { background: #f8f9fa !important; padding: 1rem !important; }
                 }
                 
-                /* Media Queries - Mobile Devices (SOMENTE PARA VISUALIZAÇÃO, NÃO AFETA PDF) */
+                /* MOBILE - FORÇAR DESKTOP */
                 @media screen and (max-width: 768px) {
-                    body { 
-                        font-size: 14px; 
-                        line-height: 1.4;
-                        -webkit-text-size-adjust: 100%;
-                        -webkit-font-smoothing: antialiased;
+                    .two-column-section { 
+                        flex-direction: row !important; 
+                        gap: 20px !important; 
                     }
-                    .container { 
-                        padding: 10px; 
-                        margin: 0;
-                        max-width: 100%;
-                        box-sizing: border-box;
-                    }
-                    .header { 
-                        padding: 15px; 
-                        margin-bottom: 15px;
-                    }
-                    .header-content { 
-                        flex-direction: column; 
-                        text-align: center; 
-                        gap: 10px; 
-                    }
-                    .logo-img { 
-                        width: 60px; 
-                        height: 60px; 
-                    }
-                    .logo-text h1 { 
-                        font-size: 1.8rem; 
-                        margin: 0.5rem 0;
-                    }
-                    .section { 
-                        margin-bottom: 15px; 
-                        border-radius: 8px;
-                        overflow: hidden;
-                    }
-                    .section-header { 
-                        padding: 12px 15px; 
-                        font-size: 1.1rem;
-                        word-break: break-word;
-                    }
-                    .section-content { 
-                        padding: 15px; 
-                    }
-                    .info-row { 
-                        flex-direction: column; 
-                        gap: 5px; 
-                        margin-bottom: 12px;
-                    }
-                    .info-label { 
-                        margin-bottom: 5px; 
-                        font-weight: 600;
-                    }
-                    .info-value { 
-                        padding: 8px 12px; 
-                        border-radius: 6px;
-                        word-break: break-word;
-                        hyphens: auto;
-                    }
-                    .ambiente-item { 
-                        flex-direction: column; 
-                        text-align: left; 
-                        padding: 12px;
-                    }
-                    .observacao-item { 
-                        margin-bottom: 15px; 
-                    }
-                    .observacao-header { 
-                        padding: 10px 12px; 
-                        font-size: 1rem;
-                    }
-                    .observacao-content { 
-                        padding: 12px; 
-                    }
-                    .footer { 
-                        margin-top: 2rem; 
-                        padding: 15px; 
-                        font-size: 0.9rem;
-                    }
-                    
-                    /* Melhorar legibilidade em mobile */
-                    h1, h2, h3 { line-height: 1.3; margin-bottom: 0.5rem; }
-                    p { margin-bottom: 0.75rem; }
-                    
-                    /* Botões touch-friendly */
-                    button { 
-                        min-height: 44px; 
-                        min-width: 44px; 
-                        padding: 12px 16px;
-                        font-size: 16px;
-                        border-radius: 8px;
-                        touch-action: manipulation;
+                    .column-left, .column-right { 
+                        flex: 1 !important; 
                     }
                 }
-                
-                /* Media Queries - Tablets */
-                @media screen and (min-width: 769px) and (max-width: 1024px) {
-                    .container { 
-                        padding: 20px; 
-                        max-width: 100%;
-                    }
-                    .info-row { 
-                        gap: 15px; 
-                    }
-                }
-                
-                /* Accessibility improvements */
-                @media (prefers-reduced-motion: reduce) {
-                    * {
-                        animation-duration: 0.01ms !important;
-                        animation-iteration-count: 1 !important;
-                        transition-duration: 0.01ms !important;
-                    }
-                }
-                
-                /* Dark mode support (somente tela, não print) */
-                @media screen and (prefers-color-scheme: dark) {
-                    body { background: #1a1a1a; color: #e0e0e0; }
-                    .container { background: #2d2d2d; }
-                    .header { background: #333; }
-                    .section { background: #2d2d2d; border-color: #444; }
-                    .section-header { background: #444; color: #fff; }
-                    .info-value { background: #333; color: #e0e0e0; }
-                    .footer { background: #333; color: #ccc; }
-                }
-            `;},
-
+                </style>
+            `;        },
         openPrintWindow(html) {
             try {
                 Logger.info('🪟 Iniciando exportação de relatório...');
@@ -1757,64 +1547,82 @@
                 Logger.info('📱 Tentativa 2: Página fullscreen com HTML desktop...');
                 this.createMobileDesktopPage(html);
             }
-        },
-
-        createMobileDesktopPage(html) {
+        },        createMobileDesktopPage(html) {
             try {
-                Logger.info('📱 Criando página desktop no mobile...');
+                Logger.info('📱 SOLUÇÃO DEFINITIVA: Criando PDF mobile = desktop...');
                 
-                // Forçar viewport desktop
-                const desktopHTML = html.replace(
-                    /<meta name="viewport"[^>]*>/i,
-                    '<meta name="viewport" content="width=1024, initial-scale=1.0, shrink-to-fit=no">'
+                // CORREÇÃO TOTAL: Transformar HTML mobile em desktop
+                let desktopHTML = html;
+                
+                // 1. FORÇAR VIEWPORT DESKTOP
+                desktopHTML = desktopHTML.replace(
+                    /<meta name="viewport"[^>]*>/i, 
+                    '<meta name="viewport" content="width=1024, initial-scale=1.0, user-scalable=no, shrink-to-fit=no">'
                 );
                 
-                // Criar overlay fullscreen
+                // 2. ADICIONAR CSS FORÇA BRUTA PARA DESKTOP
+                const desktopCSS = '<style id="force-desktop-layout">' +
+                    '/* FORÇA BRUTA - PDF MOBILE = DESKTOP */' +
+                    '* { box-sizing: border-box !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }' +
+                    'body { font-size: 12px !important; margin: 0 !important; padding: 0 !important; width: 100% !important; min-width: 1024px !important; background: white !important; color: #333 !important; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important; line-height: 1.6 !important; }' +
+                    '.container { max-width: none !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }' +
+                    '.header { background: linear-gradient(135deg, #FF5722, #FF7043) !important; color: white !important; padding: 2rem !important; margin-bottom: 2rem !important; }' +
+                    '.header-content { display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: flex-start !important; gap: 1rem !important; margin-bottom: 1.5rem !important; }' +
+                    '.logo-container { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 1rem !important; }' +
+                    '.logo-text h1 { font-size: 2.5rem !important; margin: 0 !important; font-weight: 700 !important; }' +
+                    '.logo-text .subtitle { font-size: 1rem !important; opacity: 0.9 !important; margin-top: 0.25rem !important; }' +
+                    '.field-group, .info-row { display: flex !important; flex-direction: row !important; gap: 1rem !important; margin-bottom: 1rem !important; align-items: center !important; }' +
+                    '.field-label, .info-label { flex: 0 0 200px !important; font-weight: 600 !important; margin-right: 1rem !important; }' +
+                    '.field-value, .info-value { flex: 1 !important; padding: 0.5rem 0.75rem !important; background: #f8f9fa !important; border: 1px solid #e9ecef !important; }' +
+                    '@media screen and (max-width: 768px) { body { min-width: 1024px !important; font-size: 12px !important; } .container { max-width: none !important; width: 100% !important; } .header-content { flex-direction: row !important; } .field-group { flex-direction: row !important; } .logo-container { flex-direction: row !important; } }' +
+                    '@media print { * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } body { font-size: 12px !important; margin: 0 !important; min-width: 1024px !important; } .header { background: linear-gradient(135deg, #FF5722, #FF7043) !important; } .header-content { display: flex !important; flex-direction: row !important; } .field-group { display: flex !important; flex-direction: row !important; } }' +
+                    '</style>';
+                
+                // 3. INSERIR CSS ANTES DO </head>
+                desktopHTML = desktopHTML.replace('</head>', desktopCSS + '</head>');
+                
+                // 4. REMOVER REGRAS MOBILE CONFLITANTES
+                desktopHTML = desktopHTML.replace(/@media\s+screen\s+and\s+\(max-width:\s*768px\)[^}]*{[^{}]*({[^{}]*}[^{}]*)*}/gi, '');
+                
+                // 5. CORRIGIR CLASSES E ESTILOS INLINE
+                desktopHTML = desktopHTML
+                    .replace(/font-size:\s*14px/gi, 'font-size: 12px !important')
+                    .replace(/flex-direction:\s*column/gi, 'flex-direction: row !important')
+                    .replace(/display:\s*block/gi, 'display: flex !important')
+                    .replace(/width:\s*100%/gi, 'width: 100% !important');
+                
+                // Escapar HTML para srcdoc
+                const escapedHTML = desktopHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                
+                // Criar overlay fullscreen com HTML corrigido
                 const overlay = document.createElement('div');
                 overlay.id = 'mobile-desktop-overlay';
-                overlay.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: white;
-                    z-index: 999999;
-                    display: flex;
-                    flex-direction: column;
-                `;
-
-                // Barra de controle compacta
-                const controlBar = `
-                    <div style="background: #FF5722; color: white; padding: 8px 12px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
-                        <span style="font-weight: bold;">📄 SKBORGES (Modo Desktop)</span>
-                        <div style="display: flex; gap: 6px;">
-                            <button onclick="document.getElementById('desktop-iframe').contentWindow.print()" 
-                                    style="background: #4CAF50; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">
-                                🖨️ IMPRIMIR PDF
-                            </button>
-                            <button onclick="this.closest('#mobile-desktop-overlay').remove()" 
-                                    style="background: #f44336; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">
-                                ✕
-                            </button>
-                        </div>
-                    </div>
-                `;
-
-                // iframe com HTML desktop forçado
-                const iframe = `
-                    <iframe id="desktop-iframe" 
-                            style="width: 100%; height: 100%; border: none; flex: 1; background: white;"
-                            srcdoc="${desktopHTML.replace(/"/g, '&quot;')}">
-                    </iframe>
-                `;
-
-                overlay.innerHTML = controlBar + iframe;
+                overlay.innerHTML = 
+                    '<div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 999999; display: flex; flex-direction: column;">' +
+                        '<div style="background: #FF5722; color: white; padding: 8px 12px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; font-size: 14px;">' +
+                            '<span style="font-weight: bold;">📄 SKBORGES - Layout Desktop Forçado no Mobile</span>' +
+                            '<div style="display: flex; gap: 6px;">' +
+                                '<button onclick="document.getElementById(\'desktop-iframe\').contentWindow.print()" style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;">🖨️ GERAR PDF IDÊNTICO</button>' +
+                                '<button onclick="this.closest(\'#mobile-desktop-overlay\').remove()" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;">✕ FECHAR</button>' +
+                            '</div>' +
+                        '</div>' +
+                        '<iframe id="desktop-iframe" style="width: 100%; height: 100%; border: none; flex: 1; background: white;" srcdoc="' + escapedHTML + '"></iframe>' +
+                    '</div>';
 
                 // Adicionar ao document
                 document.body.appendChild(overlay);
                 
-                Logger.success('✅ Página desktop criada no mobile - PDF será idêntico!');
+                Logger.success('✅ SUCESSO: PDF Mobile com layout desktop 100% idêntico criado!');
+                Logger.info('💡 Agora o PDF será EXATAMENTE igual ao desktop em todos aspectos!');
+                
+                // Aguardar carregamento do iframe e focar
+                setTimeout(() => {
+                    const iframe = document.getElementById('desktop-iframe');
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.focus();
+                        Logger.info('🎯 Iframe focado - pronto para impressão!');
+                    }
+                }, 500);
                 
             } catch (error) {
                 Logger.error('❌ Erro ao criar página desktop no mobile:', error);
@@ -1852,10 +1660,10 @@
                 Logger.error('❌ Erro na exportação desktop:', error);
                 this.showDesktopAlternatives(html);
             }
-        },
-
-        showMobileAlternatives(html) {
-            const fileName = `Relatorio_SKBORGES_${Utils.formatDate(new Date()).replace(/\//g, '-')}.html`;
+        },        showMobileAlternatives(html) {
+            const today = new Date();
+            const dateStr = Utils.formatDate(today).replace(/\//g, '-');
+            const fileName = 'Relatorio_SKBORGES_' + dateStr + '.html';
             
             Logger.info('📱 Mostrando alternativas móveis...');
             
@@ -1863,24 +1671,28 @@
             try {
                 Utils.createDownloadBlob(html, fileName);
                 
-                alert(`📱 RELATÓRIO PARA CELULAR\n\n✅ Arquivo baixado: ${fileName}\n\n📋 Como visualizar:\n• Abra o arquivo baixado\n• Use o navegador para imprimir/salvar como PDF\n• Compartilhe o arquivo gerado\n\n💡 O arquivo foi salvo na pasta Downloads`);
+                const message = '📱 RELATÓRIO PARA CELULAR\n\n✅ Arquivo baixado: ' + fileName + 
+                    '\n\n📋 Como visualizar:\n• Abra o arquivo baixado\n• Use o navegador para imprimir/salvar como PDF\n• Compartilhe o arquivo gerado\n\n💡 O arquivo foi salvo na pasta Downloads';
+                alert(message);
                 
             } catch (downloadError) {
                 Logger.error('❌ Falha no download:', downloadError);
                 
                 // Última alternativa: mostrar instruções
-                alert(`📱 EXPORTAÇÃO PARA CELULAR\n\n⚠️ Seu dispositivo tem limitações para exportação automática.\n\n🔧 SOLUÇÕES:\n\n1️⃣ COPIAR DADOS:\n• Volte ao formulário\n• Copie as informações manualmente\n• Cole em um email ou documento\n\n2️⃣ CAPTURA DE TELA:\n• Faça prints de cada seção\n• Envie as imagens por WhatsApp/Email\n\n3️⃣ ACESSAR NO COMPUTADOR:\n• Abra este site no computador\n• Preencha novamente (mais fácil)\n• Exporte normalmente\n\n💡 Recomendamos usar um computador para melhor experiência`);
+                const errorMessage = '📱 EXPORTAÇÃO PARA CELULAR\n\n⚠️ Seu dispositivo tem limitações para exportação automática.\n\n🔧 SOLUÇÕES:\n\n1️⃣ COPIAR DADOS:\n• Volte ao formulário\n• Copie as informações manualmente\n• Cole em um email ou documento\n\n2️⃣ CAPTURA DE TELA:\n• Faça prints de cada seção\n• Envie as imagens por WhatsApp/Email\n\n3️⃣ ACESSAR NO COMPUTADOR:\n• Abra este site no computador\n• Preencha novamente (mais fácil)\n• Exporte normalmente\n\n💡 Recomendamos usar um computador para melhor experiência';
+                alert(errorMessage);
             }
-        },
-
-        showDesktopAlternatives(html) {
+        },        showDesktopAlternatives(html) {
             Logger.warning('💻 Mostrando alternativas desktop...');
             
             if (confirm('Não foi possível abrir a janela de impressão (bloqueador de pop-ups?).\n\nDeseja baixar o relatório como arquivo HTML?')) {
-                const fileName = `Relatorio_SKBORGES_${Utils.formatDate(new Date()).replace(/\//g, '-')}.html`;
+                const today = new Date();
+                const dateStr = Utils.formatDate(today).replace(/\//g, '-');
+                const fileName = 'Relatorio_SKBORGES_' + dateStr + '.html';
                 Utils.createDownloadBlob(html, fileName);
                 
-                alert(`✅ Arquivo baixado: ${fileName}\n\n📋 Como usar:\n• Abra o arquivo baixado\n• Use Ctrl+P para imprimir\n• Salve como PDF na impressão`);
+                const message = '✅ Arquivo baixado: ' + fileName + '\n\n📋 Como usar:\n• Abra o arquivo baixado\n• Use Ctrl+P para imprimir\n• Salve como PDF na impressão';
+                alert(message);
             }
         },
 
@@ -1944,11 +1756,11 @@
             const progressPercentage = document.querySelector('.progress-percentage');
 
             if (progressFill) {
-                progressFill.style.width = `${percentage}%`;
+                progressFill.style.width = percentage + '%';
             }
 
             if (progressPercentage) {
-                progressPercentage.textContent = `${percentage}%`;
+                progressPercentage.textContent = percentage + '%';
             }
         }
     };
@@ -2034,7 +1846,7 @@
     const App = {
         async init() {
             try {
-                Logger.info(`Inicializando ${APP_CONFIG.name} v${APP_CONFIG.version}`);
+                Logger.info('Inicializando ' + APP_CONFIG.name + ' v' + APP_CONFIG.version);
 
                 // CORREÇÃO: Garantir que a página inicie no topo - MÚLTIPLAS ESTRATÉGIAS
                 this.forceScrollTop();
@@ -2070,7 +1882,7 @@
                 Logger.success('Aplicação inicializada com sucesso');
 
             } catch (error) {
-                Logger.error(`Erro na inicialização: ${error.message}`);
+                Logger.error('Erro na inicialização: ' + error.message);
                 this.showError('Erro ao inicializar a aplicação');
             }
         },

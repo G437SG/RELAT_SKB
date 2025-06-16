@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1024, initial-scale=1.0, user-scalable=no">
+    <title>🔍 DIAGNÓSTICO: PDF Mobile vs Desktop - SKBORGES</title>
+    
+    <style>
+        /* CSS DIAGNÓSTICO - FORÇA DESKTOP EM TODOS DISPOSITIVOS */
+        * {
+            margin: 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            font-size: 12px !important;
+            line-height: 1.6 !important;
+            color: #333 !important;
+            background: white !important;
+            width: 100% !important;
+            min-width: 1024px !important; /* FORÇA LARGURA DESKTOP */
+        }
+        
+        /* RESET MOBILE - ELIMINAR TODAS REGRAS RESPONSIVAS */
+        @media screen and (max-width: 768px) {
+            body { min-width: 1024px !important; }
+            .container { max-width: none !important; width: 100% !important; }
+            .header-content { flex-direction: row !important; }
+            .field-group { display: flex !important; flex-direction: row !important; }
+        }
+        
+        @media print {
+            * { 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+            }
+            body { 
+                font-size: 12px !important; 
+                margin: 0 !important; 
+                width: 100% !important;
+                min-width: 1024px !important;
+            }
+            .container { max-width: none !important; width: 100% !important; }
+            .header-content { display: flex !important; flex-direction: row !important; }
+        }
+        
+        .diagnostic-container {
+            max-width: none;
+            width: 100%;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #FF5722, #FF7043);
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex-direction: row !important; /* FORÇAR ROW SEMPRE */
+            gap: 1rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-text h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 700;
+        }
+        
+        .logo-text .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+        
+        .version-info {
+            text-align: right;
+        }
+        
+        .diagnostic-section {
+            background: #f8f9fa;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            margin: 20px 0;
+            padding: 20px;
+        }
+        
+        .diagnostic-title {
+            background: #007bff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 15px;
+            margin: -20px -20px 15px -20px;
+        }
+        
+        .field-group {
+            display: flex !important;
+            flex-direction: row !important; /* FORÇAR ROW SEMPRE */
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        
+        .field-label {
+            flex: 0 0 200px;
+            font-weight: 600;
+            background: #e9ecef;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+        
+        .field-value {
+            flex: 1;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: #000; }
+        .btn-danger { background: #dc3545; color: white; }
+        
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+        
+        .device-info {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .checklist {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .checklist ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .checklist li {
+            margin: 5px 0;
+            padding: 3px 0;
+        }
+        
+        /* FORÇA LAYOUT DESKTOP NO MOBILE */
+        @media screen and (max-width: 768px) {
+            body { 
+                min-width: 1024px !important; 
+                transform: scale(0.8) !important;
+                transform-origin: top left !important;
+            }
+            .diagnostic-container { 
+                width: 1024px !important; 
+                min-width: 1024px !important; 
+            }
+            .header-content { 
+                flex-direction: row !important; 
+                display: flex !important;
+            }
+            .field-group { 
+                flex-direction: row !important; 
+                display: flex !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="diagnostic-container">
+        <!-- Cabeçalho SKBORGES -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo-text">
+                        <h1>🔍 SKBORGES</h1>
+                        <div class="subtitle">Diagnóstico PDF Mobile vs Desktop</div>
+                    </div>
+                </div>
+                <div class="version-info">
+                    <div>Versão: 4.0</div>
+                    <div id="device-type">Dispositivo: Detectando...</div>
+                    <div id="viewport-size">Viewport: Detectando...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Informações do Dispositivo -->
+        <div class="device-info">
+            <h3>📱 Informações do Dispositivo Atual</h3>
+            <div class="field-group">
+                <div class="field-label">User Agent:</div>
+                <div class="field-value" id="user-agent"></div>
+            </div>
+            <div class="field-group">
+                <div class="field-label">Largura da Tela:</div>
+                <div class="field-value" id="screen-width"></div>
+            </div>
+            <div class="field-group">
+                <div class="field-label">Tipo de Dispositivo:</div>
+                <div class="field-value" id="device-category"></div>
+            </div>
+            <div class="field-group">
+                <div class="field-label">Orientation:</div>
+                <div class="field-value" id="orientation"></div>
+            </div>
+        </div>
+        
+        <!-- Seção de Diagnóstico -->
+        <div class="diagnostic-section">
+            <div class="diagnostic-title">🎯 TESTE DO LAYOUT DESKTOP FORÇADO</div>
+            
+            <p><strong>Objetivo:</strong> Verificar se o layout desktop está sendo aplicado corretamente no mobile.</p>
+            
+            <div class="field-group">
+                <div class="field-label">Nome do Cliente:</div>
+                <div class="field-value">João Silva Santos</div>
+            </div>
+            
+            <div class="field-group">
+                <div class="field-label">Tipo do Projeto:</div>
+                <div class="field-value">Residencial - Casa Unifamiliar</div>
+            </div>
+            
+            <div class="field-group">
+                <div class="field-label">Área do Terreno:</div>
+                <div class="field-value">450,00 m²</div>
+            </div>
+            
+            <div class="field-group">
+                <div class="field-label">Área Construída:</div>
+                <div class="field-value">180,00 m²</div>
+            </div>
+        </div>
+        
+        <!-- Checklist Visual -->
+        <div class="checklist">
+            <h3>✅ CHECKLIST VISUAL - Verificar no PDF:</h3>
+            <ul>
+                <li>✅ Os campos estão em layout horizontal (lado a lado)?</li>
+                <li>✅ O cabeçalho SKBORGES está com gradiente laranja/vermelho?</li>
+                <li>✅ As fontes estão em 12px (tamanho desktop)?</li>
+                <li>✅ Os espaçamentos estão corretos (não comprimidos)?</li>
+                <li>✅ As cores de fundo estão sendo aplicadas?</li>
+                <li>✅ O logo e textos estão alinhados horizontalmente?</li>
+                <li>✅ Não há quebras de linha forçadas pelo mobile?</li>
+            </ul>
+        </div>
+        
+        <!-- Botões de Teste -->
+        <div class="test-buttons">
+            <button class="btn btn-primary" onclick="window.print()">
+                🖨️ GERAR PDF (Teste Atual)
+            </button>
+            
+            <button class="btn btn-success" onclick="forceDesktopLayout()">
+                💻 FORÇAR LAYOUT DESKTOP
+            </button>
+            
+            <button class="btn btn-warning" onclick="showLayoutInfo()">
+                📊 ANALISAR LAYOUT
+            </button>
+            
+            <button class="btn btn-danger" onclick="resetMobileStyles()">
+                📱 RESETAR ESTILOS MOBILE
+            </button>
+        </div>
+        
+        <!-- Resultado do Diagnóstico -->
+        <div class="diagnostic-section">
+            <div class="diagnostic-title">📋 RESULTADO DO DIAGNÓSTICO</div>
+            <div id="diagnostic-result">
+                <p>Clique em "ANALISAR LAYOUT" para ver o diagnóstico completo.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Detectar informações do dispositivo
+        function updateDeviceInfo() {
+            document.getElementById('user-agent').textContent = navigator.userAgent;
+            document.getElementById('screen-width').textContent = `${screen.width} x ${screen.height}`;
+            document.getElementById('viewport-size').textContent = `${window.innerWidth} x ${window.innerHeight}`;
+            document.getElementById('orientation').textContent = screen.orientation?.type || 'N/A';
+            
+            // Detectar tipo de dispositivo
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isTablet = /iPad|Android/i.test(navigator.userAgent) && window.innerWidth > 768;
+            
+            let deviceType = 'Desktop';
+            if (isMobile && !isTablet) deviceType = 'Mobile';
+            else if (isTablet) deviceType = 'Tablet';
+            
+            document.getElementById('device-category').textContent = deviceType;
+            document.getElementById('device-type').textContent = `Dispositivo: ${deviceType}`;
+        }
+        
+        function forceDesktopLayout() {
+            // Forçar viewport desktop
+            let viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+                viewport.setAttribute('content', 'width=1024, initial-scale=1.0, user-scalable=no');
+            }
+            
+            // Adicionar CSS força bruta
+            const style = document.createElement('style');
+            style.innerHTML = `
+                body { 
+                    min-width: 1024px !important; 
+                    width: 100% !important;
+                    transform: none !important;
+                }
+                .diagnostic-container { 
+                    width: 100% !important; 
+                    min-width: 1024px !important; 
+                }
+                .header-content, .field-group { 
+                    display: flex !important; 
+                    flex-direction: row !important; 
+                }
+                @media print {
+                    body { 
+                        min-width: 1024px !important; 
+                        width: 100% !important; 
+                        font-size: 12px !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            alert('✅ Layout desktop forçado! Tente gerar o PDF agora.');
+            updateDeviceInfo();
+        }
+        
+        function showLayoutInfo() {
+            const result = document.getElementById('diagnostic-result');
+            const isFlexRow = window.getComputedStyle(document.querySelector('.header-content')).flexDirection === 'row';
+            const fontSize = window.getComputedStyle(document.body).fontSize;
+            const bodyWidth = window.getComputedStyle(document.body).width;
+            const minWidth = window.getComputedStyle(document.body).minWidth;
+            
+            result.innerHTML = `
+                <h4>📊 Análise do Layout Atual:</h4>
+                <div class="field-group">
+                    <div class="field-label">Flex Direction (Header):</div>
+                    <div class="field-value">${isFlexRow ? '✅ ROW (Desktop)' : '❌ COLUMN (Mobile)'}</div>
+                </div>
+                <div class="field-group">
+                    <div class="field-label">Font Size (Body):</div>
+                    <div class="field-value">${fontSize === '12px' ? '✅ 12px (Desktop)' : '❌ ' + fontSize + ' (Mobile)'}</div>
+                </div>
+                <div class="field-group">
+                    <div class="field-label">Body Width:</div>
+                    <div class="field-value">${bodyWidth}</div>
+                </div>
+                <div class="field-group">
+                    <div class="field-label">Min Width:</div>
+                    <div class="field-value">${minWidth}</div>
+                </div>
+                <div class="field-group">
+                    <div class="field-label">Viewport:</div>
+                    <div class="field-value">${window.innerWidth} x ${window.innerHeight}</div>
+                </div>
+                <p><strong>Status:</strong> ${isFlexRow && fontSize === '12px' ? '✅ LAYOUT DESKTOP ATIVO' : '❌ LAYOUT MOBILE DETECTADO'}</p>
+            `;
+        }
+        
+        function resetMobileStyles() {
+            // Remover estilos mobile
+            const mobileStyles = document.querySelectorAll('style');
+            mobileStyles.forEach(style => {
+                if (style.innerHTML.includes('@media') || style.innerHTML.includes('max-width')) {
+                    style.remove();
+                }
+            });
+            
+            alert('🔄 Estilos mobile removidos. Use "FORÇAR LAYOUT DESKTOP" novamente.');
+            updateDeviceInfo();
+        }
+        
+        // Inicializar
+        updateDeviceInfo();
+        
+        // Atualizar info quando redimensionar
+        window.addEventListener('resize', updateDeviceInfo);
+        window.addEventListener('orientationchange', updateDeviceInfo);
+    </script>
+</body>
+</html>

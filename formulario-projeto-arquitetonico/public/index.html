@@ -5,6 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKBORGES - Sistema Profissional de Projetos Arquitetônicos</title>
     
+    <!-- CSS FORÇA BRUTA - PDF MOBILE = DESKTOP -->
+    <style>
+        /* GARANTIR PDF IDÊNTICO EM TODOS OS DISPOSITIVOS */
+        @media print {
+            /* RESET TOTAL E LAYOUT DESKTOP FORÇADO */
+            * { 
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            
+            body { 
+                font-size: 12px !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                background: white !important;
+                color: #000 !important;
+                width: 100% !important;
+            }
+            
+            .container { 
+                max-width: none !important; 
+                padding: 0 !important; 
+                margin: 0 !important;
+                width: 100% !important;
+            }
+            
+            /* FORÇAR LAYOUT HORIZONTAL */
+            .header-content, 
+            .field-group, 
+            .info-row { 
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 1rem !important;
+                justify-content: space-between !important;
+            }
+            
+            .field-label, 
+            .info-label { 
+                flex: 0 0 200px !important;
+                font-weight: 600 !important;
+                margin-right: 1rem !important;
+            }
+            
+            .field-value, 
+            .info-value { 
+                flex: 1 !important;
+                padding: 0.5rem 0.75rem !important;
+                background: #f8f9fa !important;
+                border: 1px solid #e9ecef !important;
+            }
+            
+            /* GARANTIR BACKGROUNDS */
+            .header { background: linear-gradient(135deg, #FF5722, #FF7043) !important; }
+            .section-header { background: #37474F !important; color: white !important; }
+            .section-content { background: white !important; }
+            .footer { background: #f8f9fa !important; }
+        }
+    </style>
+    
     <!-- Seus outros scripts e CSS vêm depois -->
     <link rel="stylesheet" href="style.css">
     <!-- ... outros arquivos ... -->
