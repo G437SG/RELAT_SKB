@@ -103,10 +103,14 @@ body {
 }
 
 /* ===== HEADER PRINCIPAL ===== */
-header {    background: linear-gradient(135deg, var(--laranja-principal) 0%, var(--laranja-escuro) 100%);
+header {
+    background: linear-gradient(135deg, var(--laranja-principal) 0%, var(--laranja-escuro) 100%);
     color: white;
     padding: 1rem 2rem;
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
 }
 
 .header-content {
@@ -1213,22 +1217,25 @@ header {    background: linear-gradient(135deg, var(--laranja-principal) 0%, var
 }
 
 @media (max-width: 768px) {
-    /* Garantir que o header ocupe 100% da largura no mobile */
+    /* CORREÇÃO DEFINITIVA: Header ocupar 100vw em mobile */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow-x: hidden !important;
+    }
+    
     header {
         width: 100vw !important;
-        margin: 0 !important;
+        margin-left: calc(-50vw + 50%) !important;
         padding: 1rem 0 !important;
         box-sizing: border-box !important;
         position: relative !important;
-        left: 50% !important;
-        right: 50% !important;
-        margin-left: -50vw !important;
-        margin-right: -50vw !important;
     }
     
     .header-content {
         padding: 0 1rem !important;
-        max-width: none !important;
+        margin: 0 auto !important;
+        max-width: 100% !important;
         width: 100% !important;
         box-sizing: border-box !important;
         flex-direction: column !important;
@@ -1240,31 +1247,44 @@ header {    background: linear-gradient(135deg, var(--laranja-principal) 0%, var
         flex-direction: column !important;
         align-items: center !important;
         gap: 1rem !important;
+        width: 100% !important;
     }
     
     .logo-img {
         height: 120px !important;
+        width: auto !important;
+    }
+    
+    .logo-text {
+        text-align: center !important;
+        width: 100% !important;
     }
     
     .logo-text h1 {
         font-size: 2rem !important;
+        margin: 0 !important;
     }
     
     .logo-text .subtitle {
         font-size: 0.8rem !important;
+        margin-top: 0.5rem !important;
     }
     
-    .info-container {
-        text-align: center !important;
-    }
-    
-    .info-container .info-item {
-        font-size: 0.8rem !important;
+    .version-info {
+        margin-top: 0.5rem !important;
     }
     
     /* Ajustar container principal no mobile */
     .container-fluid {
         padding: 0 0.5rem !important;
+        margin: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .main-content {
+        margin: 0 !important;
+        padding: 1rem 0 !important;
     }
     
     /* Ajustar seções no mobile */
@@ -1285,12 +1305,25 @@ header {    background: linear-gradient(135deg, var(--laranja-principal) 0%, var
     .form-input, .form-textarea {
         font-size: 16px !important; /* Evitar zoom no iOS */
         padding: 0.75rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
     
     .btn {
         width: 100% !important;
         padding: 1rem !important;
         font-size: 1rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Layout responsivo para formulário */    .main-layout {
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+    
+    .formulario-coluna, .preview-coluna {
+        width: 100% !important;
+        margin: 0 !important;
     }
 }
 
@@ -1436,4 +1469,56 @@ select:focus {
 
 .subopcoes-container .checkbox-option .checkbox-custom::after {
     font-size: 11px;
+}
+
+/* ===== CORREÇÃO ESPECÍFICA PARA HEADER MOBILE ===== */
+/* Garantir que o header sempre ocupe 100% da largura em mobile */
+@media (max-width: 768px) {
+    /* Resetar body e html para evitar limitações de largura */
+    html, body {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Header com técnica de escape de container */
+    header {
+        width: 100vw !important;
+        position: relative !important;
+        left: 50% !important;
+        right: 50% !important;
+        margin-left: -50vw !important;
+        margin-right: -50vw !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding: 1rem 0 !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Garantir que o conteúdo do header seja centralizado */
+    .header-content {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 0 1rem !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* Versão alternativa para dispositivos muito pequenos */
+@media (max-width: 480px) {
+    header {
+        width: 100vw !important;
+        margin-left: -50vw !important;
+        margin-right: -50vw !important;
+        left: 50% !important;
+        right: 50% !important;
+        position: relative !important;
+        padding: 0.75rem 0 !important;
+    }
+    
+    .header-content {
+        padding: 0 0.75rem !important;
+    }
 }
