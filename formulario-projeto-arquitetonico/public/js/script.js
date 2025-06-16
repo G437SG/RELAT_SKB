@@ -811,10 +811,9 @@
                 return `
                     <!DOCTYPE html>
                     <html lang="pt-BR">
-                    <head>
-                        <meta charset="UTF-8">
+                    <head>                        <meta charset="UTF-8">
                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Relatório SKBORGES - ${fileName} - CRIADO POR: Gabriel Goulart</title>
+                        <title>Relatório SKBORGES - ${fileName}</title>
                         <style>${this.getReportStyles()}</style>
                     </head>                    <body>
                         <div class="header">                            <div class="header-content">
@@ -1103,9 +1102,8 @@
             html += '</div></div>';
 
             console.log('📐 Seção de escopo ULTRA-COMPLETA gerada - TODAS as opções exibidas');
-            return html;
-        },generateEnvironmentsSection(data) {
-            console.log('🏠 Gerando seção COMPLETA de ambientes');
+            return html;        },generateEnvironmentsSection(data) {
+            console.log('🏠 Gerando seção de ambientes com formato: AMBIENTE 01 - NOME: - DESCRIÇÃO:');
             console.log('Ambientes recebidos:', data.ambiente);
             console.log('Necessidades recebidas:', data.necessidades);
             
@@ -1126,8 +1124,8 @@
                 `;
             }
             
-            // Gerar seção completa para cada ambiente
-            let html = '<div class="environments-list">';
+            // Listar cada ambiente individualmente
+            let html = '<div class="environments-list-individual">';
             
             // Garantir que temos o mesmo número de necessidades
             const maxLength = Math.max(ambientes.length, necessidades.length);
@@ -1135,74 +1133,60 @@
             for (let i = 0; i < maxLength; i++) {
                 const ambiente = ambientes[i] || '';
                 const necessidade = necessidades[i] || '';
-                const hasAmbiente = ambiente.trim() !== '';
-                const hasNecessidade = necessidade.trim() !== '';
+                const numeroAmbiente = String(i + 1).padStart(2, '0'); // 01, 02, 03...
                 
-                console.log(`🏠 Ambiente ${i + 1}: "${ambiente}" | Necessidade: "${necessidade}"`);
+                console.log(`🏠 Ambiente ${numeroAmbiente}: "${ambiente}" | Necessidade: "${necessidade}"`);
                 
                 html += `
-                    <div class="ambiente-card ${(!hasAmbiente && !hasNecessidade) ? 'empty-ambiente' : 'filled-ambiente'}">
-                        <div class="ambiente-header">
-                            <span class="ambiente-number">${i + 1}</span>
-                            <span class="ambiente-label">Ambiente ${i + 1}</span>
+                    <div class="ambiente-individual">
+                        <div class="ambiente-titulo">
+                            <strong>AMBIENTE ${numeroAmbiente}</strong>
                         </div>
-                        <div class="ambiente-content">                            <div class="ambiente-name">
-                                <strong>📍 - Nome do Ambiente:</strong>
-                                <div class="ambiente-title ${!hasAmbiente ? 'empty' : 'filled'}">${hasAmbiente ? ambiente : '(Não especificado)'}</div>
+                        <div class="ambiente-dados">
+                            <div class="ambiente-nome">
+                                <strong>NOME:</strong> ${ambiente.trim() !== '' ? ambiente : '(Não especificado)'}
                             </div>
-                            <div class="ambiente-needs">
-                                <strong>📋 - Necessidades Específicas:</strong>
-                                <div class="ambiente-desc ${!hasNecessidade ? 'empty' : 'filled'}">${hasNecessidade ? necessidade : '(Nenhuma necessidade especificada)'}</div>
-                            </div></div>
+                            <div class="ambiente-descricao">
+                                <strong>DESCRIÇÃO:</strong> ${necessidade.trim() !== '' ? necessidade : '(Nenhuma descrição especificada)'}
+                            </div>
+                        </div>
                     </div>
                 `;
             }
             
             html += '</div>';
             
-            // Resumo estatístico
-            const preenchidos = ambientes.filter(a => a.trim() !== '').length;
-            const comNecessidades = necessidades.filter(n => n.trim() !== '').length;
-            
+            // Apenas o total de ambientes (sem resumo completo)
             html += `
-                <div class="environments-summary">
-                    <h5>📊 - Resumo dos Ambientes</h5>
-                    <div class="summary-stats">
-                        <div class="stat-item">
-                            <strong>Total de Ambientes:</strong> ${ambientes.length}
-                        </div>
-                        <div class="stat-item">
-                            <strong>Ambientes Nomeados:</strong> ${preenchidos}
-                        </div>
-                        <div class="stat-item">
-                            <strong>Com Necessidades Definidas:</strong> ${comNecessidades}
-                        </div>
+                <div class="environments-total">
+                    <div class="total-item">
+                        <strong>TOTAL DE AMBIENTES:</strong> ${ambientes.length}
                     </div>
                 </div>
             `;
             
-            console.log('🏠 Seção de ambientes COMPLETA gerada');
-            return html;
-        },generateTimelineSection(data) {
+            console.log('🏠 Seção de ambientes INDIVIDUAL gerada com total');
+            return html;},generateTimelineSection(data) {
             const prazos = [
-                { label: 'Levantamento', value: data.prazoLevantamento, icon: 'fa-search' },
-                { label: 'Layout', value: data.prazoLayout, icon: 'fa-drafting-compass' },
-                { label: 'Modelagem 3D', value: data.prazoModelagem3d, icon: 'fa-cube' },
-                { label: 'Projeto Executivo', value: data.prazoProjetoExecutivo, icon: 'fa-tools' },
-                { label: 'Complementares', value: data.prazoComplementares, icon: 'fa-cogs' }
+                { label: 'LEVANTAMENTO', value: data.prazoLevantamento, icon: 'fa-search' },
+                { label: 'LAYOUT', value: data.prazoLayout, icon: 'fa-drafting-compass' },
+                { label: 'MODELAGEM 3D', value: data.prazoModelagem3d, icon: 'fa-cube' },
+                { label: 'PROJETO EXECUTIVO', value: data.prazoProjetoExecutivo, icon: 'fa-tools' },
+                { label: 'COMPLEMENTARES', value: data.prazoComplementares, icon: 'fa-cogs' }
             ];
 
-            let html = '<div class="prazos-grid">';
+            let html = '<div class="prazos-list">';
             
-            // Mostrar todos os prazos, preenchidos ou não
+            // Mostrar todos os prazos no formato "NOME: X DIAS"
             prazos.forEach(prazo => {
                 const hasValue = prazo.value && prazo.value.trim();
                 html += `
-                    <div class="prazo-item ${hasValue ? 'filled' : 'empty'}">
-                        <div class="prazo-icon"><i class="fas ${prazo.icon}"></i></div>
-                        <div class="prazo-value">${hasValue ? prazo.value : '--'}</div>
-                        <div class="prazo-label">${prazo.label}</div>
-                        ${hasValue ? '<div class="prazo-unit">dias</div>' : '<div class="prazo-unit empty">não definido</div>'}
+                    <div class="prazo-item-horizontal ${hasValue ? 'filled' : 'empty'}">
+                        <div class="prazo-content">
+                            <i class="fas ${prazo.icon}"></i>
+                            <strong>${prazo.label}:</strong>
+                            <span class="prazo-value">${hasValue ? prazo.value + ' DIAS' : 'NÃO DEFINIDO'}</span>
+                        </div>
                     </div>
                 `;
             });
@@ -1210,16 +1194,17 @@
             // Mostrar prazo total
             const hasTotal = data.prazoTotal && data.prazoTotal.trim();
             html += `
-                <div class="prazo-item prazo-total ${hasTotal ? 'filled' : 'empty'}">
-                    <div class="prazo-icon"><i class="fas fa-calculator"></i></div>
-                    <div class="prazo-value">${hasTotal ? data.prazoTotal : '--'}</div>
-                    <div class="prazo-label">TOTAL</div>
-                    ${hasTotal ? '<div class="prazo-unit">dias</div>' : '<div class="prazo-unit empty">não calculado</div>'}
+                <div class="prazo-item-horizontal prazo-total ${hasTotal ? 'filled' : 'empty'}">
+                    <div class="prazo-content">
+                        <i class="fas fa-calculator"></i>
+                        <strong>TOTAL:</strong>
+                        <span class="prazo-value">${hasTotal ? data.prazoTotal + ' DIAS' : 'NÃO CALCULADO'}</span>
+                    </div>
                 </div>
             `;
 
             html += '</div>';
-            return html;        },        generateObservationsSection(data) {
+            return html;},        generateObservationsSection(data) {
             console.log('💭 === INICIANDO GERAÇÃO DA SEÇÃO DE OBSERVAÇÕES ===');
             console.log('💭 Dados recebidos:', data);
             
@@ -1601,8 +1586,7 @@
                 }
                 
                 @media print {
-                    @page {
-                        margin: 2cm 1.5cm 3cm 1.5cm;
+                    @page {                        margin: 2cm 1.5cm 3cm 1.5cm;
                         @bottom-center {
                             content: "CRIADO POR: Gabriel Goulart";
                             font-size: 10px;
@@ -1610,6 +1594,162 @@
                             opacity: 0.4;
                         }
                     }
+                }
+                
+                /* ESTILOS PARA CRONOGRAMA HORIZONTAL */
+                .prazos-list {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 10px !important;
+                }
+                
+                .prazo-item-horizontal {
+                    display: flex !important;
+                    align-items: center !important;
+                    padding: 12px 15px !important;
+                    border: 1px solid #e9ecef !important;
+                    border-radius: 6px !important;
+                    background: #f8f9fa !important;
+                }
+                
+                .prazo-item-horizontal.filled {
+                    background: #e7f3ff !important;
+                    border-color: #007bff !important;
+                }
+                
+                .prazo-item-horizontal.empty {
+                    background: #f1f1f1 !important;
+                    border-color: #ddd !important;
+                    opacity: 0.7 !important;
+                }
+                
+                .prazo-item-horizontal.prazo-total {
+                    background: #e8f5e8 !important;
+                    border-color: #28a745 !important;
+                    font-weight: bold !important;
+                }
+                
+                .prazo-content {
+                    display: flex !important;
+                    align-items: center !important;
+                    gap: 8px !important;
+                    width: 100% !important;
+                }
+                
+                .prazo-content i {
+                    color: #FF5722 !important;
+                    width: 20px !important;
+                }
+                
+                .prazo-content strong {
+                    color: #333 !important;
+                    min-width: 120px !important;
+                }
+                
+                .prazo-value {
+                    color: #007bff !important;
+                    font-weight: bold !important;
+                }
+                
+                /* ESTILOS PARA RESUMO DE AMBIENTES SIMPLIFICADO */
+                .environments-summary {
+                    background: #f8f9fa !important;
+                    border: 1px solid #e9ecef !important;
+                    border-radius: 8px !important;
+                    padding: 20px !important;
+                    margin-top: 15px !important;
+                }
+                
+                .environments-summary h5 {
+                    color: #FF5722 !important;
+                    margin-bottom: 15px !important;
+                    font-size: 16px !important;
+                }
+                
+                .summary-stats {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 10px !important;
+                }
+                
+                .stat-item {
+                    display: flex !important;
+                    justify-content: space-between !important;
+                    align-items: center !important;
+                    padding: 8px 0 !important;
+                    border-bottom: 1px solid #e9ecef !important;
+                }
+                
+                .stat-item:last-child {
+                    border-bottom: none !important;
+                }
+                  .stat-item strong {
+                    color: #333 !important;
+                }
+                
+                /* ESTILOS PARA AMBIENTES INDIVIDUAIS */
+                .environments-list-individual {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 20px !important;
+                    margin-bottom: 20px !important;
+                }
+                
+                .ambiente-individual {
+                    border: 1px solid #e9ecef !important;
+                    border-radius: 8px !important;
+                    padding: 15px !important;
+                    background: #f8f9fa !important;
+                }
+                
+                .ambiente-titulo {
+                    margin-bottom: 12px !important;
+                    padding-bottom: 8px !important;
+                    border-bottom: 2px solid #FF5722 !important;
+                }
+                
+                .ambiente-titulo strong {
+                    color: #FF5722 !important;
+                    font-size: 14px !important;
+                    font-weight: bold !important;
+                }
+                
+                .ambiente-dados {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 8px !important;
+                }
+                
+                .ambiente-nome, .ambiente-descricao {
+                    display: flex !important;
+                    align-items: flex-start !important;
+                    gap: 8px !important;
+                }
+                
+                .ambiente-nome strong, .ambiente-descricao strong {
+                    color: #333 !important;
+                    font-weight: bold !important;
+                    min-width: 90px !important;
+                    flex-shrink: 0 !important;
+                }
+                
+                .environments-total {
+                    background: #e8f5e8 !important;
+                    border: 1px solid #28a745 !important;
+                    border-radius: 8px !important;
+                    padding: 15px !important;
+                    margin-top: 20px !important;
+                }
+                
+                .total-item {
+                    display: flex !important;
+                    justify-content: space-between !important;
+                    align-items: center !important;
+                }
+                
+                .total-item strong {
+                    color: #28a745 !important;
+                    font-size: 14px !important;
                 }
                 </style>
             `;},
@@ -1654,11 +1794,10 @@
                     Logger.success('✅ Janela móvel aberta - injetando HTML desktop!');
                     
                     // Injetar HTML com viewport desktop
-                    printWindow.document.write(desktopHTML);
-                    printWindow.document.close();
+                    printWindow.document.write(desktopHTML);                    printWindow.document.close();
                     
                     // CORREÇÃO: Definir título personalizado para substituir "about:blank"
-                    printWindow.document.title = 'Relatório SKBORGES - CRIADO POR: Gabriel Goulart';
+                    printWindow.document.title = 'Relatório SKBORGES';
                     
                     // Aguardar carregamento completo
                     printWindow.onload = () => {
@@ -1789,13 +1928,11 @@
                 
                 if (!printWindow || printWindow.closed) {
                     throw new Error('Janela bloqueada por pop-up blocker');
-                }
-
-                printWindow.document.write(html);
+                }                printWindow.document.write(html);
                 printWindow.document.close();
                 
                 // CORREÇÃO: Definir título personalizado para substituir "about:blank"
-                printWindow.document.title = 'Relatório SKBORGES - CRIADO POR: Gabriel Goulart';
+                printWindow.document.title = 'Relatório SKBORGES';
 
                 printWindow.onload = () => {
                     Logger.info('📄 Conteúdo carregado, focando janela...');
