@@ -1213,53 +1213,103 @@ header {    background: linear-gradient(135deg, var(--laranja-principal) 0%, var
 }
 
 @media (max-width: 768px) {
+    /* Garantir que o header ocupe 100% da largura no mobile */
+    header {
+        width: 100vw !important;
+        margin: 0 !important;
+        padding: 1rem 0 !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+        left: 50% !important;
+        right: 50% !important;
+        margin-left: -50vw !important;
+        margin-right: -50vw !important;
+    }
+    
+    .header-content {
+        padding: 0 1rem !important;
+        max-width: none !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 1rem !important;
+    }
+    
+    .logo-container {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 1rem !important;
+    }
+    
+    .logo-img {
+        height: 120px !important;
+    }
+    
+    .logo-text h1 {
+        font-size: 2rem !important;
+    }
+    
+    .logo-text .subtitle {
+        font-size: 0.8rem !important;
+    }
+    
+    .info-container {
+        text-align: center !important;
+    }
+    
+    .info-container .info-item {
+        font-size: 0.8rem !important;
+    }
+    
+    /* Ajustar container principal no mobile */
     .container-fluid {
-        padding: 0 0.5rem;
+        padding: 0 0.5rem !important;
     }
     
-    .main-layout {
-        gap: 1rem;
+    /* Ajustar seções no mobile */
+    .form-section {
+        margin: 1rem 0 !important;
+        padding: 1rem !important;
     }
     
-    .observacoes-container {
-        grid-template-columns: 1fr;
-        padding: 1rem;
+    .checkbox-group {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem !important;
     }
     
-    .observacao-section.sticky {
-        padding: 0.75rem;
+    .form-group {
+        margin-bottom: 1rem !important;
     }
     
-    .observacao-section.sticky .form-textarea {
-        font-size: 0.8rem;
-        min-height: 50px;
+    .form-input, .form-textarea {
+        font-size: 16px !important; /* Evitar zoom no iOS */
+        padding: 0.75rem !important;
+    }
+    
+    .btn {
+        width: 100% !important;
+        padding: 1rem !important;
+        font-size: 1rem !important;
     }
 }
 
 @media (max-width: 480px) {
-    .container {
-        padding: 0 10px;
+    header {
+        padding: 0.75rem 0 !important;
     }
     
-    .main-header {
-        padding: 1.5rem 0;
+    .logo-img {
+        height: 100px !important;
     }
     
-    .logo-section h1 {
-        font-size: 1.8rem;
+    .logo-text h1 {
+        font-size: 1.5rem !important;
     }
     
-    .section-content {
-        padding: 1rem;
-    }
-    
-    .form-input, .form-textarea {
-        font-size: 16px;
-    }
-    
-    .btn-primary, .btn-secondary {
-        padding: 0.875rem 1.5rem;
-        font-size: 0.95rem;
+    .form-section {
+        padding: 0.75rem !important;
+        margin: 0.5rem 0 !important;
     }
 }
 

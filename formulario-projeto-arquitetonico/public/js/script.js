@@ -890,23 +890,9 @@
                                         <h4>🏗️ - Observações sobre o Projeto</h4>
                                         <div class="obs-item detailed">📋 ${formData.observacaoProjeto || '(Nenhuma observação sobre projeto informada)'}</div>
                                     </div>
-                                    
-                                    <div class="obs-column">
+                                      <div class="obs-column">
                                         <h4>📊 - Observações Finais</h4>
                                         <div class="obs-item detailed">✨ ${formData.observacaoFinal || '(Nenhuma observação final informada)'}</div>
-                                        
-                                        <h4>📋 - Resumo das Observações</h4>
-                                        <div class="summary-stats">
-                                            <div class="stat-item">
-                                                <strong>Total de Campos:</strong> 6
-                                            </div>
-                                            <div class="stat-item">
-                                                <strong>Campos Preenchidos:</strong> ${this._countFilledObservations(formData)}
-                                            </div>
-                                            <div class="stat-item">
-                                                <strong>Taxa de Preenchimento:</strong> ${Math.round((this._countFilledObservations(formData) / 6) * 100)}%
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1246,31 +1232,13 @@
                             </div>
                         </div>
                     </div>
-                `;
-            });
+                `;            });
 
             html += '</div>';
             
-            // Resumo das observações
-            html += `
-                <div class="observations-summary">
-                    <h5>📊 - Resumo das Observações</h5>
-                    <div class="summary-stats">
-                        <div class="stat-item">
-                            <strong>Total de Campos:</strong> ${observacoes.length}
-                        </div>
-                        <div class="stat-item">
-                            <strong>Campos Preenchidos:</strong> ${totalPreenchidas}
-                        </div>
-                        <div class="stat-item">
-                            <strong>Campos Vazios:</strong> ${observacoes.length - totalPreenchidas}
-                        </div>
-                        <div class="stat-item">
-                            <strong>Taxa de Preenchimento:</strong> ${Math.round((totalPreenchidas / observacoes.length) * 100)}%
-                        </div>
-                    </div>
-                </div>
-            `;            console.log('💭 === SEÇÃO DE OBSERVAÇÕES GERADA COM SUCESSO ===');
+            // RESUMO DAS OBSERVAÇÕES REMOVIDO CONFORME SOLICITAÇÃO
+            
+            console.log('💭 === SEÇÃO DE OBSERVAÇÕES GERADA COM SUCESSO (SEM RESUMO) ===');
             console.log(`💭 HTML gerado (${html.length} caracteres):`, html.substring(0, 200) + '...');
             console.log('💭 === FIM DA GERAÇÃO DE OBSERVAÇÕES ===');
             
@@ -1478,13 +1446,35 @@
                         background: linear-gradient(135deg, #FF5722, #FF7043) !important;
                     }
                 }
-                
-                /* MOBILE - FORÇAR DESKTOP */
+                  /* MOBILE - FORÇAR DESKTOP E CORRIGIR HEADER */
                 @media screen and (max-width: 768px) {
+                    body {
+                        min-width: 100vw !important;
+                        width: 100vw !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    
+                    .header {
+                        width: 100vw !important;
+                        margin: 0 !important;
+                        padding: 2rem !important;
+                        box-sizing: border-box !important;
+                        background: linear-gradient(135deg, #FF5722, #FF7043) !important;
+                    }
+                    
+                    .header-content {
+                        width: 100% !important;
+                        flex-direction: row !important;
+                        gap: 20px !important;
+                    }
+                    
                     .two-column-section { 
                         flex-direction: row !important; 
                         gap: 20px !important; 
-                    }                    .column-left, .column-right { 
+                    }                    
+                    
+                    .column-left, .column-right { 
                         flex: 1 !important; 
                     }
                 }
@@ -1854,19 +1844,17 @@
                 // 2. ADICIONAR CSS FORÇA BRUTA PARA DESKTOP
                 const desktopCSS = '<style id="force-desktop-layout">' +
                     '/* FORÇA BRUTA - PDF MOBILE = DESKTOP */' +
-                    '* { box-sizing: border-box !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }' +
-                    'body { font-size: 12px !important; margin: 0 !important; padding: 0 !important; width: 100% !important; min-width: 1024px !important; background: white !important; color: #333 !important; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important; line-height: 1.6 !important; }' +
+                    '* { box-sizing: border-box !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }' +                    'body { font-size: 12px !important; margin: 0 !important; padding: 0 !important; width: 100vw !important; min-width: 100vw !important; background: white !important; color: #333 !important; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important; line-height: 1.6 !important; }' +
                     '.container { max-width: none !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }' +
-                    '.header { background: linear-gradient(135deg, #FF5722, #FF7043) !important; color: white !important; padding: 2rem !important; margin-bottom: 2rem !important; }' +
-                    '.header-content { display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: flex-start !important; gap: 1rem !important; margin-bottom: 1.5rem !important; }' +
+                    '.header { background: linear-gradient(135deg, #FF5722, #FF7043) !important; color: white !important; padding: 2rem !important; margin: 0 !important; width: 100vw !important; box-sizing: border-box !important; }' +
+                    '.header-content { display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: flex-start !important; gap: 1rem !important; margin-bottom: 1.5rem !important; width: 100% !important; }'+
                     '.logo-container { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 1rem !important; }' +
                     '.logo-text h1 { font-size: 2.5rem !important; margin: 0 !important; font-weight: 700 !important; }' +
                     '.logo-text .subtitle { font-size: 1rem !important; opacity: 0.9 !important; margin-top: 0.25rem !important; }' +
                     '.field-group, .info-row { display: flex !important; flex-direction: row !important; gap: 1rem !important; margin-bottom: 1rem !important; align-items: center !important; }' +
                     '.field-label, .info-label { flex: 0 0 200px !important; font-weight: 600 !important; margin-right: 1rem !important; }' +
-                    '.field-value, .info-value { flex: 1 !important; padding: 0.5rem 0.75rem !important; background: #f8f9fa !important; border: 1px solid #e9ecef !important; }' +
-                    '@media screen and (max-width: 768px) { body { min-width: 1024px !important; font-size: 12px !important; } .container { max-width: none !important; width: 100% !important; } .header-content { flex-direction: row !important; } .field-group { flex-direction: row !important; } .logo-container { flex-direction: row !important; } }' +
-                    '@media print { * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } body { font-size: 12px !important; margin: 0 !important; min-width: 1024px !important; } .header { background: linear-gradient(135deg, #FF5722, #FF7043) !important; } .header-content { display: flex !important; flex-direction: row !important; } .field-group { display: flex !important; flex-direction: row !important; } }' +
+                    '.field-value, .info-value { flex: 1 !important; padding: 0.5rem 0.75rem !important; background: #f8f9fa !important; border: 1px solid #e9ecef !important; }' +                    '@media screen and (max-width: 768px) { body { min-width: 100vw !important; width: 100vw !important; font-size: 12px !important; margin: 0 !important; padding: 0 !important; } .container { max-width: none !important; width: 100% !important; } .header { width: 100vw !important; margin: 0 !important; box-sizing: border-box !important; } .header-content { flex-direction: row !important; width: 100% !important; } .field-group { flex-direction: row !important; } .logo-container { flex-direction: row !important; } }' +
+                    '@media print { * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } body { font-size: 12px !important; margin: 0 !important; min-width: 1024px !important; } .header { background: linear-gradient(135deg, #FF5722, #FF7043) !important; width: 100% !important; } .header-content { display: flex !important; flex-direction: row !important; } .field-group { display: flex !important; flex-direction: row !important; } }'+
                     '</style>';
                 
                 // 3. INSERIR CSS ANTES DO </head>
