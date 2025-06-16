@@ -103,8 +103,7 @@ body {
 }
 
 /* ===== HEADER PRINCIPAL ===== */
-main-header {
-    background: linear-gradient(135deg, var(--laranja-principal) 0%, var(--laranja-escuro) 100%);
+header {    background: linear-gradient(135deg, var(--laranja-principal) 0%, var(--laranja-escuro) 100%);
     color: white;
     padding: 1rem 2rem;
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
@@ -113,7 +112,7 @@ main-header {
 .header-content {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
     gap: 1.5rem;
@@ -149,6 +148,20 @@ main-header {
     color: white !important;
     opacity: 0.9;
     margin-top: 0.2rem;
+}
+
+.version-info {
+    margin-left: auto;
+}
+
+.version-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* ===== LAYOUT PRINCIPAL DE DUAS COLUNAS ===== */
@@ -1050,6 +1063,13 @@ main-header {
     opacity: 0.8;
     font-size: 0.9rem;
     color: white !important;
+}
+
+.creator-info {
+    opacity: 0.3;
+    font-size: 0.8rem;
+    color: #f0f0f0 !important;
+    margin-top: 0.25rem;
 }
 
 .footer-links {

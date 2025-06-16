@@ -511,21 +511,36 @@
          * NOVO: Função auxiliar para remover duplicação de HTML.
          * Todas as funções `generate...Section` criavam a mesma estrutura de wrapper <div class="section">.
          * Esta função centraliza a criação dessa estrutura.
-         */        _createSection(title, iconClass, contentHtml) {
-            if (!contentHtml || contentHtml.trim() === '') return '';
-            
+         */        _createSection(title, iconClass, content) {
             return `
                 <div class="section">
                     <div class="section-header">
-                        <i class="fas ${iconClass}"></i>
-                        ${title}
+                        <i class="fas ${iconClass}"></i> - ${title}
                     </div>
                     <div class="section-content">
-                        ${contentHtml}
+                        ${content}
                     </div>
                 </div>
             `;
-        },        async generate() {
+        },
+
+        // FUNÇÃO AUXILIAR: Contar observações preenchidas
+        _countFilledObservations(data) {
+            const observationFields = [
+                'observacaoCliente',
+                'observacaoProjeto', 
+                'observacaoEscopo',
+                'observacaoAmbientes',
+                'observacaoPrazos',
+                'observacaoFinal'
+            ];
+            
+            return observationFields.filter(field => 
+                data[field] && data[field].trim() !== ''
+            ).length;
+        },
+
+        async generate() {
             if (this.isGenerating) {
                 Logger.warning('Geração já em andamento');
                 return;
@@ -799,7 +814,7 @@
                     <head>
                         <meta charset="UTF-8">
                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>${fileName}</title>
+                        <title>Relatório SKBORGES - ${fileName} - CRIADO POR: Gabriel Goulart</title>
                         <style>${this.getReportStyles()}</style>
                     </head>                    <body>
                         <div class="header">                            <div class="header-content">
@@ -833,18 +848,76 @@
                                     ${clientSection}
                                     ${projectSection}
                                 </div>
+                            </div>                        </div>                        <div class="main-sections">
+                            <div class="section-with-observations">
+                                ${this._createSection('Escopo do Projeto', 'fa-list-check', scopeSection)}
+                                <div class="side-observations">
+                                    <h4>💭 - Observações sobre o Escopo</h4>                                    <div class="related-obs">
+                                        <div class="obs-item">📐 ${formData.observacaoEscopo || '(Nenhuma observação sobre escopo informada)'}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="section-with-observations">
+                                ${this._createSection('Ambientes e Necessidades', 'fa-home', environmentsSection)}
+                                <div class="side-observations">
+                                    <h4>💭 - Observações sobre os Ambientes</h4>
+                                    <div class="related-obs">
+                                        <div class="obs-item">🏠 ${formData.observacaoAmbientes || '(Nenhuma observação sobre ambientes informada)'}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="section-with-observations">
+                                ${this._createSection('Cronograma do Projeto', 'fa-clock', timelineSection)}
+                                <div class="side-observations">
+                                    <h4>💭 - Observações sobre os Prazos</h4>
+                                    <div class="related-obs">
+                                        <div class="obs-item">⏰ ${formData.observacaoPrazos || '(Nenhuma observação sobre prazos informada)'}</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        ${this._createSection('Escopo do Projeto', 'fa-list-check', scopeSection)}
-                        ${this._createSection('Ambientes e Necessidades', 'fa-home', environmentsSection)}
-                        ${this._createSection('Cronograma do Projeto', 'fa-clock', timelineSection)}
-                        ${this._createSection('Observações', 'fa-sticky-note', observationsSection)}
                         
-                        <div class="footer">
+                        <div class="section">
+                            <div class="section-header">
+                                <i class="fas fa-sticky-note"></i> - Observações Completas do Cliente
+                            </div>
+                            <div class="section-content">
+                                <div class="observations-grid">                                    <div class="obs-column">
+                                        <h4>👤 - Observações sobre o Cliente</h4>
+                                        <div class="obs-item detailed">👤 ${formData.observacaoCliente || '(Nenhuma observação sobre cliente informada)'}</div>
+                                        
+                                        <h4>🏗️ - Observações sobre o Projeto</h4>
+                                        <div class="obs-item detailed">📋 ${formData.observacaoProjeto || '(Nenhuma observação sobre projeto informada)'}</div>
+                                    </div>
+                                    
+                                    <div class="obs-column">
+                                        <h4>📊 - Observações Finais</h4>
+                                        <div class="obs-item detailed">✨ ${formData.observacaoFinal || '(Nenhuma observação final informada)'}</div>
+                                        
+                                        <h4>📋 - Resumo das Observações</h4>
+                                        <div class="summary-stats">
+                                            <div class="stat-item">
+                                                <strong>Total de Campos:</strong> 6
+                                            </div>
+                                            <div class="stat-item">
+                                                <strong>Campos Preenchidos:</strong> ${this._countFilledObservations(formData)}
+                                            </div>
+                                            <div class="stat-item">
+                                                <strong>Taxa de Preenchimento:</strong> ${Math.round((this._countFilledObservations(formData) / 6) * 100)}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                          <div class="footer">
                             <div><strong>SKBORGES - Sistema de Projetos Arquitetônicos v${APP_CONFIG.version}</strong></div>
                             <div>Arquivo: ${fileName}</div>
                             <div>Gerado automaticamente em ${now.toLocaleString('pt-BR')}</div>
-                        </div>                    </div>
+                            <div class="creator-info">CRIADO POR: Gabriel Goulart</div>
+                        </div></div>
                     <div class="no-print" style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
                         <button onclick="window.print()" style="padding: 10px 20px; background: #FF5722; color: white; border: none; border-radius: 4px; cursor: pointer;">
                             🖨️ Imprimir/Salvar PDF
@@ -890,10 +963,8 @@
             });
 
             return `
-                <div class="column-left">
-                    <h3 class="section-title">
-                        <i class="fas fa-user"></i>
-                        INFORMAÇÕES PESSOAIS
+                <div class="column-left">                    <h3 class="section-title">
+                        <i class="fas fa-user"></i> - INFORMAÇÕES PESSOAIS
                     </h3>
                     <div class="info-list">
                         ${clientList}
@@ -938,10 +1009,8 @@
             });
 
             return `
-                <div class="column-right">
-                    <h3 class="section-title">
-                        <i class="fas fa-building"></i>
-                        INFORMAÇÕES DO PROJETO
+                <div class="column-right">                    <h3 class="section-title">
+                        <i class="fas fa-building"></i> - INFORMAÇÕES DO PROJETO
                     </h3>
                     <div class="info-list">
                         ${projectList}
@@ -963,19 +1032,14 @@
                 { key: 'layout', label: 'Layout', desc: 'Distribuição e organização dos espaços' },
                 { key: 'modelagem3d', label: 'Modelagem 3D', desc: 'Visualização tridimensional do projeto' },
                 { key: 'detalhamento', label: 'Detalhamento', desc: 'Especificações técnicas detalhadas' }
-            ];
-
-            arquiteturaItems.forEach(item => {
+            ];            arquiteturaItems.forEach(item => {
                 const isChecked = data[item.key] === true;
                 console.log(`📐 ${item.label}: ${isChecked ? 'MARCADO' : 'DESMARCADO'}`);
-                
-                html += `
+                  html += `
                     <div class="checkbox-item ${isChecked ? 'checked' : 'unchecked'}">
-                        <span class="checkbox-icon">${isChecked ? '✅' : '☐'}</span>
                         <div class="checkbox-content">
-                            <strong>${item.label}</strong>
+                            <strong>${isChecked ? '✅' : '☐'} - ${item.label}</strong>
                             <small>${item.desc}</small>
-                            <div class="status-badge ${isChecked ? 'selected' : 'not-selected'}">${isChecked ? 'SELECIONADO' : 'NÃO SELECIONADO'}</div>
                         </div>
                     </div>
                 `;
@@ -985,7 +1049,7 @@
 
             // Detalhamentos Específicos - TODOS os itens, sempre visíveis (usar lista completa)
             html += '<div class="sub-options">';
-            html += '<h5 class="sub-title">📋 Detalhamentos Específicos (Marque todos que se aplicam):</h5>';
+            html += '<h5 class="sub-title">📋 - Detalhamentos Específicos (Marque todos que se aplicam):</h5>';
             html += '<div class="sub-checkbox-list">';
 
             // Usar a lista completa de detalhamentos
@@ -995,16 +1059,13 @@
             ];
 
             console.log('🔧 Detalhamentos selecionados:', data.detalhamentoEspecifico);
-            console.log('🔧 Lista completa de detalhamentos:', detalhamentoItems);
-
-            detalhamentoItems.forEach(item => {
+            console.log('🔧 Lista completa de detalhamentos:', detalhamentoItems);            detalhamentoItems.forEach(item => {
                 const isChecked = data.detalhamentoEspecifico && data.detalhamentoEspecifico.includes(item);
                 console.log(`🔧 ${item}: ${isChecked ? 'MARCADO' : 'DESMARCADO'}`);
                 
                 html += `
                     <div class="sub-checkbox-item ${isChecked ? 'checked' : 'unchecked'}">
-                        <span class="checkbox-icon">${isChecked ? '✅' : '☐'}</span>
-                        <span class="item-name">${item}</span>
+                        <span class="item-name">${isChecked ? '✅' : '☐'} - ${item}</span>
                         <span class="item-status ${isChecked ? 'selected' : 'not-selected'}">${isChecked ? 'SIM' : 'NÃO'}</span>
                     </div>
                 `;
@@ -1026,19 +1087,14 @@
                 { key: 'cftv', label: 'CFTV', desc: 'Circuito fechado de TV' },
                 { key: 'alarme', label: 'Alarme', desc: 'Sistema de segurança' },
                 { key: 'incendio', label: 'Incêndio', desc: 'Sistema de prevenção' }
-            ];
-
-            complementarItems.forEach(item => {
+            ];            complementarItems.forEach(item => {
                 const isChecked = data[item.key] === true;
                 console.log(`⚙️ ${item.label}: ${isChecked ? 'MARCADO' : 'DESMARCADO'}`);
-                
-                html += `
+                  html += `
                     <div class="checkbox-item ${isChecked ? 'checked' : 'unchecked'}">
-                        <span class="checkbox-icon">${isChecked ? '✅' : '☐'}</span>
                         <div class="checkbox-content">
-                            <strong>${item.label}</strong>
+                            <strong>${isChecked ? '✅' : '☐'} - ${item.label}</strong>
                             <small>${item.desc}</small>
-                            <div class="status-badge ${isChecked ? 'selected' : 'not-selected'}">${isChecked ? 'INCLUÍDO' : 'NÃO INCLUÍDO'}</div>
                         </div>
                     </div>
                 `;
@@ -1090,21 +1146,14 @@
                             <span class="ambiente-number">${i + 1}</span>
                             <span class="ambiente-label">Ambiente ${i + 1}</span>
                         </div>
-                        <div class="ambiente-content">
-                            <div class="ambiente-name">
-                                <strong>📍 Nome do Ambiente:</strong>
+                        <div class="ambiente-content">                            <div class="ambiente-name">
+                                <strong>📍 - Nome do Ambiente:</strong>
                                 <div class="ambiente-title ${!hasAmbiente ? 'empty' : 'filled'}">${hasAmbiente ? ambiente : '(Não especificado)'}</div>
                             </div>
                             <div class="ambiente-needs">
-                                <strong>📋 Necessidades Específicas:</strong>
+                                <strong>📋 - Necessidades Específicas:</strong>
                                 <div class="ambiente-desc ${!hasNecessidade ? 'empty' : 'filled'}">${hasNecessidade ? necessidade : '(Nenhuma necessidade especificada)'}</div>
-                            </div>
-                        </div>
-                        <div class="ambiente-status">
-                            <span class="status-indicator ${(hasAmbiente || hasNecessidade) ? 'configured' : 'pending'}">
-                                ${(hasAmbiente || hasNecessidade) ? '✅ Configurado' : '⚠️ Pendente'}
-                            </span>
-                        </div>
+                            </div></div>
                     </div>
                 `;
             }
@@ -1117,7 +1166,7 @@
             
             html += `
                 <div class="environments-summary">
-                    <h5>📊 Resumo dos Ambientes</h5>
+                    <h5>📊 - Resumo dos Ambientes</h5>
                     <div class="summary-stats">
                         <div class="stat-item">
                             <strong>Total de Ambientes:</strong> ${ambientes.length}
@@ -1201,16 +1250,10 @@
                 const hasObs = obs.content && obs.content.trim();
                 if (hasObs) totalPreenchidas++;
                 
-                console.log(`💭 ${index + 1}. ${obs.title}: ${hasObs ? `"${obs.content}"` : 'VAZIO'}`);
-                
-                html += `
+                console.log(`💭 ${index + 1}. ${obs.title}: ${hasObs ? `"${obs.content}"` : 'VAZIO'}`);                html += `
                     <div class="observacao-card ${hasObs ? 'filled' : 'empty'}">
                         <div class="observacao-header">
-                            <span class="observacao-icon">${obs.icon}</span>
-                            <div class="observacao-title">${obs.title}</div>
-                            <span class="observacao-status ${hasObs ? 'has-content' : 'no-content'}">
-                                ${hasObs ? '✅ Preenchida' : '⚪ Vazia'}
-                            </span>
+                            <div class="observacao-title">${obs.icon} - ${obs.title}</div>
                         </div>
                         <div class="observacao-content">
                             <div class="observacao-text ${hasObs ? 'filled' : 'empty'}">
@@ -1226,7 +1269,7 @@
             // Resumo das observações
             html += `
                 <div class="observations-summary">
-                    <h5>📊 Resumo das Observações</h5>
+                    <h5>📊 - Resumo das Observações</h5>
                     <div class="summary-stats">
                         <div class="stat-item">
                             <strong>Total de Campos:</strong> ${observacoes.length}
@@ -1456,13 +1499,120 @@
                     .two-column-section { 
                         flex-direction: row !important; 
                         gap: 20px !important; 
-                    }
-                    .column-left, .column-right { 
+                    }                    .column-left, .column-right { 
                         flex: 1 !important; 
                     }
                 }
+                
+                /* LAYOUT COM OBSERVAÇÕES AO LADO */
+                .main-sections {
+                    margin-top: 20px !important;
+                }
+                
+                .section-with-observations {
+                    display: flex !important;
+                    gap: 20px !important;
+                    margin-bottom: 30px !important;
+                    align-items: flex-start !important;
+                }
+                
+                .section-with-observations .section {
+                    flex: 2 !important;
+                    margin-bottom: 0 !important;
+                }
+                
+                .side-observations {
+                    flex: 1 !important;
+                    background: #f8f9fa !important;
+                    border: 1px solid #e9ecef !important;
+                    border-radius: 8px !important;
+                    padding: 15px !important;
+                    margin-top: 0 !important;
+                }
+                
+                .side-observations h4 {
+                    color: #FF5722 !important;
+                    font-size: 14px !important;
+                    margin-bottom: 10px !important;
+                    padding-bottom: 5px !important;
+                    border-bottom: 1px solid #e9ecef !important;
+                }
+                
+                .related-obs {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 8px !important;
+                }
+                
+                .obs-item {
+                    background: white !important;
+                    padding: 8px 12px !important;
+                    border-radius: 4px !important;
+                    border-left: 3px solid #FF5722 !important;
+                    font-size: 12px !important;
+                    color: #555 !important;
+                }
+                
+                /* RESPONSIVIDADE - MOBILE */
+                @media (max-width: 768px) {
+                    .section-with-observations {
+                        flex-direction: column !important;
+                        gap: 10px !important;
+                    }
+                    
+                    .side-observations {
+                        margin-top: 10px !important;
+                    }
+                }
+                  @media print {
+                    .section-with-observations {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        gap: 20px !important;
+                        page-break-inside: avoid !important;
+                    }
+                }
+                
+                /* FOOTER E CREATOR INFO */
+                .footer {
+                    background: #f8f9fa !important;
+                    padding: 15px !important;
+                    margin-top: 20px !important;
+                    border-top: 1px solid #e9ecef !important;
+                    text-align: center !important;
+                    font-size: 11px !important;
+                }
+                  .creator-info {
+                    color: #e0e0e0 !important;
+                    font-size: 10px !important;
+                    opacity: 0.4 !important;
+                    margin-top: 5px !important;
+                }
+                
+                /* RODAPÉ ESPECÍFICO DO PDF */
+                @page {
+                    margin: 2cm 1.5cm 3cm 1.5cm;
+                    @bottom-center {
+                        content: "CRIADO POR: Gabriel Goulart";
+                        font-size: 10px;
+                        color: #e0e0e0;
+                        opacity: 0.4;
+                    }
+                }
+                
+                @media print {
+                    @page {
+                        margin: 2cm 1.5cm 3cm 1.5cm;
+                        @bottom-center {
+                            content: "CRIADO POR: Gabriel Goulart";
+                            font-size: 10px;
+                            color: #e0e0e0;
+                            opacity: 0.4;
+                        }
+                    }
+                }
                 </style>
-            `;        },
+            `;},
         openPrintWindow(html) {
             try {
                 Logger.info('🪟 Iniciando exportação de relatório...');
@@ -1498,8 +1648,7 @@
                 
                 // ESTRATÉGIA 1: window.open com HTML desktop forçado
                 Logger.info('📱 Tentativa 1: window.open com viewport desktop...');
-                
-                const printWindow = window.open('', '_blank', 'width=1024,height=768,scrollbars=yes,resizable=yes,toolbar=no,menubar=no');
+                  const printWindow = window.open('', '_blank', 'width=1024,height=768,scrollbars=yes,resizable=yes,toolbar=no,menubar=no');
                 
                 if (printWindow && !printWindow.closed) {
                     Logger.success('✅ Janela móvel aberta - injetando HTML desktop!');
@@ -1507,6 +1656,9 @@
                     // Injetar HTML com viewport desktop
                     printWindow.document.write(desktopHTML);
                     printWindow.document.close();
+                    
+                    // CORREÇÃO: Definir título personalizado para substituir "about:blank"
+                    printWindow.document.title = 'Relatório SKBORGES - CRIADO POR: Gabriel Goulart';
                     
                     // Aguardar carregamento completo
                     printWindow.onload = () => {
@@ -1633,8 +1785,7 @@
         handleDesktopExport(html) {
             try {
                 Logger.info('💻 Abrindo janela para desktop...');
-                
-                const printWindow = window.open('', '_blank', 'width=1000,height=700,scrollbars=yes,resizable=yes,toolbar=no,menubar=yes');
+                  const printWindow = window.open('', '_blank', 'width=1000,height=700,scrollbars=yes,resizable=yes,toolbar=no,menubar=yes');
                 
                 if (!printWindow || printWindow.closed) {
                     throw new Error('Janela bloqueada por pop-up blocker');
@@ -1642,6 +1793,9 @@
 
                 printWindow.document.write(html);
                 printWindow.document.close();
+                
+                // CORREÇÃO: Definir título personalizado para substituir "about:blank"
+                printWindow.document.title = 'Relatório SKBORGES - CRIADO POR: Gabriel Goulart';
 
                 printWindow.onload = () => {
                     Logger.info('📄 Conteúdo carregado, focando janela...');
