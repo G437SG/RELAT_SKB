@@ -946,6 +946,254 @@ header {
     }
 }
 
+/* ===== OTIMIZAÇÃO DA COLUNA DE OBSERVAÇÕES EM MOBILE ===== */
+@media (max-width: 1024px) {
+  .observacoes-header {
+    position: static !important;
+    border-radius: 10px 10px 0 0 !important;
+  }
+  
+  .observacoes-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: 1rem !important;
+    padding: 1.5rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .observacoes-container {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    padding: 1rem !important;
+  }
+  
+  .observacao-section.sticky {
+    margin-bottom: 1rem !important;
+  }
+}
+
+/* ===== MELHORIA: VISUALIZAÇÃO EXCLUSIVA MOBILE/TABLET ===== */
+@media (max-width: 1024px) {
+  .main-layout {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+  }
+  .formulario-coluna {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    order: 1 !important;
+  }
+  .observacoes-coluna-lateral-fixa {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-height: none !important;
+    margin-top: 2rem !important;
+    order: 2 !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .main-layout {
+    grid-template-columns: 1fr 350px !important;
+  }
+  .formulario-coluna {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+  .observacoes-coluna-lateral-fixa {
+    display: block !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html, body {
+    overflow-x: hidden !important;
+  }
+  .formulario-coluna, .main-content, .container-fluid {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* ===== RESPONSIVIDADE ESPECÍFICA PARA RADIO GROUPS E AMBIENTES ===== */
+
+/* Radio Groups - Tipo de Imóvel e Tipo de Projeto em Mobile */
+@media (max-width: 768px) {
+    .radio-group, .checkbox-group {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+      .radio-option, .checkbox-option {
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+        min-height: unset !important;
+    }
+    
+    .radio-custom, .checkbox-custom {
+        width: 18px !important;
+        height: 18px !important;
+        margin-top: 1px !important;
+    }
+}
+
+/* Seção de Ambientes - Botão e Container Responsivos */
+@media (max-width: 768px) {
+    .add-ambiente-container {
+        margin-top: 1.5rem !important;
+        padding: 0 1rem !important;
+    }
+    
+    .btn-add-ambiente {
+        width: 100% !important;
+        padding: 1rem !important;
+        font-size: 1rem !important;
+        border-radius: 8px !important;
+        justify-content: center !important;
+    }
+    
+    .demandas-container {
+        padding: 0 !important;
+        margin: 1rem 0 !important;
+    }
+    
+    /* Container de demandas individuais (se criados dinamicamente) */
+    .demanda-item {
+        width: 100% !important;
+        margin-bottom: 1rem !important;
+        padding: 1rem !important;
+        border-radius: 8px !important;
+    }
+}
+
+/* Mobile muito pequeno - ajustes extras */
+@media (max-width: 480px) {
+    .radio-group, .checkbox-group {
+        gap: 0.5rem !important;
+    }
+    
+    .radio-option, .checkbox-option {
+        padding: 0.5rem !important;
+        font-size: 0.85rem !important;
+    }
+    
+    .btn-add-ambiente {
+        padding: 0.875rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .section-content {
+        padding: 1rem !important;
+    }
+}
+
+/* Grid de formulário responsivo para campos específicos */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .input-group.full-width {
+        grid-column: 1 !important;
+    }
+}
+
+/* ===== RESPONSIVIDADE PARA ELEMENTOS CRIADOS DINAMICAMENTE - AMBIENTES ===== */
+
+/* Demandas/Ambientes criados dinamicamente */
+@media (max-width: 768px) {
+    .demanda-linha {
+        width: 100% !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .demanda-card {
+        padding: 1rem !important;
+        border-radius: 8px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .demanda-header {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .demanda-info {
+        flex: 1 !important;
+    }
+    
+    .demanda-inputs-inline {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important;
+        width: 100% !important;
+    }
+    
+    .input-group-inline {
+        width: 100% !important;
+        margin-bottom: 0 !important;
+    }
+    
+    .ambiente-input-group,
+    .necessidades-input-group {
+        width: 100% !important;
+    }
+    
+    .demanda-nome-input,
+    .demanda-desc-input {
+        width: 100% !important;
+        padding: 0.75rem !important;
+        font-size: 1rem !important;
+        border-radius: 6px !important;
+        box-sizing: border-box !important;
+    }
+    
+    .input-label-compact {
+        margin-bottom: 0.5rem !important;
+        font-size: 0.9rem !important;
+        width: 100% !important;
+    }
+    
+    .btn-remove {
+        padding: 0.5rem !important;
+        width: auto !important;
+        height: auto !important;
+        min-width: 40px !important;
+        border-radius: 6px !important;
+    }
+}
+
+/* Mobile muito pequeno - ajustes extras para ambientes */
+@media (max-width: 480px) {
+    .demanda-card {
+        padding: 0.75rem !important;
+    }
+    
+    .demanda-inputs-inline {
+        gap: 0.75rem !important;
+    }
+    
+    .demanda-nome-input,
+    .demanda-desc-input {
+        padding: 0.625rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .input-label-compact {
+        font-size: 0.85rem !important;
+    }
+}
+
 /* ===== BOTÕES ===== */
 .btn-primary, .btn-secondary {
     padding: 1rem 2rem;
@@ -1520,5 +1768,65 @@ select:focus {
     
     .header-content {
         padding: 0 0.75rem !important;
+    }
+}
+
+/* ===== RESPONSIVIDADE PARA ESCOPO DO PROJETO ===== */
+
+@media (max-width: 768px) {
+    .escopo-group {
+        padding: 1rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .escopo-title {
+        font-size: 1.1rem !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .escopo-title i {
+        font-size: 1rem !important;
+    }
+    
+    /* Subopções de detalhamento responsivas */
+    .subopcoes-container {
+        margin-top: 1rem !important;
+        padding: 1rem !important;
+    }
+    
+    .subopcao-title {
+        font-size: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .subopcoes-container .checkbox-group.compact {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+    
+    .subopcoes-container .checkbox-option {
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .escopo-group {
+        padding: 0.75rem !important;
+    }
+    
+    .escopo-title {
+        font-size: 1rem !important;
+    }
+    
+    .subopcoes-container {
+        padding: 0.75rem !important;
+    }
+    
+    .subopcao-title {
+        font-size: 0.95rem !important;
     }
 }
