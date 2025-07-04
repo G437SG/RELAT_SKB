@@ -1,0 +1,146 @@
+<!-- SEÇÃO: Ambientes e Necessidades -->
+<section class="form-section animate-fade-in-up">
+    <div class="section-header">
+        <i class="fas fa-home"></i>
+        <h2>Ambientes e Necessidades</h2>
+        <span class="contador-badge" id="contadorDemandas">0 ambientes</span>
+    </div>
+    
+    <div class="section-content">
+        <div id="listaDemandas" class="demandas-container">
+            <!-- Demandas serão inseridas aqui dinamicamente -->
+        </div>
+        
+        <div class="add-ambiente-container">
+            <button type="button" id="adicionarDemanda" class="btn-add-ambiente">
+                <i class="fas fa-plus"></i>
+                Adicionar Ambiente
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- SEÇÃO: Prazos do Projeto (MOVIDA PARA CÁ) -->
+<section class="form-section animate-fade-in-up">
+    <div class="section-header">
+        <i class="fas fa-clock"></i>
+        <h2>Prazos do Projeto</h2>
+        <span class="info-badge">(em dias)</span>
+    </div>
+    
+    <div class="section-content">
+        <div class="prazos-grid">
+            <div class="prazo-group">
+                <label for="prazoLevantamento" class="input-label">
+                    <i class="fas fa-search"></i>
+                    Levantamento
+                </label>
+                <div class="input-with-unit">
+                    <input type="number" 
+                           id="prazoLevantamento" 
+                           name="prazoLevantamento" 
+                           class="form-input prazo-input" 
+                           placeholder="Ex: 7" 
+                           min="1" 
+                           max="365">
+                    <span class="unit-label">dias</span>
+                </div>
+            </div>
+            
+            <div class="prazo-group">
+                <label for="prazoLayout" class="input-label">
+                    <i class="fas fa-drafting-compass"></i>
+                    Layout
+                </label>
+                <div class="input-with-unit">
+                    <input type="number" 
+                           id="prazoLayout" 
+                           name="prazoLayout" 
+                           class="form-input prazo-input" 
+                           placeholder="Ex: 10" 
+                           min="1" 
+                           max="365">
+                    <span class="unit-label">dias</span>
+                </div>
+            </div>
+            
+            <div class="prazo-group">
+                <label for="prazoModelagem3d" class="input-label">
+                    <i class="fas fa-cube"></i>
+                    Modelagem 3D
+                </label>
+                <div class="input-with-unit">
+                    <input type="number" 
+                           id="prazoModelagem3d" 
+                           name="prazoModelagem3d" 
+                           class="form-input prazo-input" 
+                           placeholder="Ex: 15" 
+                           min="1" 
+                           max="365">
+                    <span class="unit-label">dias</span>
+                </div>
+            </div>
+            
+            <div class="prazo-group">
+                <label for="prazoProjetoExecutivo" class="input-label">
+                    <i class="fas fa-tools"></i>
+                    Projeto Executivo
+                </label>
+                <div class="input-with-unit">
+                    <input type="number" 
+                           id="prazoProjetoExecutivo" 
+                           name="prazoProjetoExecutivo" 
+                           class="form-input prazo-input" 
+                           placeholder="Ex: 20" 
+                           min="1" 
+                           max="365">
+                    <span class="unit-label">dias</span>
+                </div>
+            </div>
+            
+            <div class="prazo-group">
+                <label for="prazoComplementares" class="input-label">
+                    <i class="fas fa-cogs"></i>
+                    Complementares
+                </label>
+                <div class="input-with-unit">
+                    <input type="number" 
+                           id="prazoComplementares" 
+                           name="prazoComplementares" 
+                           class="form-input prazo-input" 
+                           placeholder="Ex: 25" 
+                           min="1" 
+                           max="365">
+                    <span class="unit-label">dias</span>
+                </div>
+            </div>
+            
+            <div class="prazo-group prazo-total-group">
+                <label for="prazoTotal" class="input-label total-label">
+                    <i class="fas fa-calculator"></i>
+                    Prazo Total
+                </label>
+                <div class="input-with-unit total-input">
+                    <input type="number" 
+                           id="prazoTotal" 
+                           name="prazoTotal" 
+                           class="form-input prazo-total-input" 
+                           readonly>
+                    <span class="unit-label">dias</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ADIÇÃO: Exibir subopções de detalhamento -->
+<div class="detalhamento-container">
+    <h4 class="detalhamento-title">Detalhamento Incluído:</h4>
+    <div class="detalhamento-items">
+        <div class="detalhamento-item">
+            Exemplo de item
+        </div>
+    </div>
+</div>
+
+<!-- Continuar com as próximas seções... -->

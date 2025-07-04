@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKBORGES - Sistema de Captação de Informações Projetuais</title>
+    
+    <!-- CSS Print Styles - Only for PDF Export -->
+    <style>
+        @media print {
+            /* Basic print styles that don't affect main page */
+            * { 
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            @page {
+                size: A4 !important;
+                margin: 1.2cm 0.8cm !important;
+            }
+            
+            /* STANDARDIZED FONT SIZES: 12px for sections/boxes, 9px for all other text */
+            body { 
+                font-size: 9px !important; 
+                line-height: 1.2 !important;
+                background: white !important;
+                color: #000 !important;
+            }
+            
+            /* Section names and box titles: 12px */
+            h1, h2, h3, .section-title, .section-header h2, .main-title { 
+                font-size: 12px !important; 
+                font-weight: bold !important;
+            }
+            
+            /* All other text: 9px */
+            p, span, div, td, th, label, input, textarea, small {
+                font-size: 9px !important;
+            }
+            
+            .header { 
+                background: linear-gradient(135deg, #FF5722, #FF7043) !important; 
+                color: white !important;
+            }
+            
+            .section-header { 
+                background: #37474F !important; 
+                color: white !important; 
+            }
+            
+            /* Hide elements that shouldn't print */
+            .observacoes-coluna-lateral-fixa,
+            .btn-group,
+            .generate-report-btn,
+            .form-actions,
+            .mobile-actions,
+            .floating-actions {
+                display: none !important;
+            }
+        }
+    </style>
+    
+    <!-- Seus outros scripts e CSS vêm depois -->
+    <link rel="stylesheet" href="style.css">
+    <!-- ... outros arquivos ... -->
+    
+</head>
+<body>    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="images/logo.png" alt="SKBORGES Logo" class="logo-img">
+                <div class="logo-text">
+                    <h1><i class="fas fa-drafting-compass"></i> SKBORGES</h1>
+                    <div class="subtitle">Sistema de Captação de Informações Projetuais</div>
+                </div>
+            </div>
+            <div class="version-info">
+                <span class="version-badge">v4.0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading Screen -->
+    <div id="page-loading" class="page-loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Layout Principal com Duas Colunas -->
+    <main class="main-content">
+        <div class="container-fluid">
+            <div class="main-layout">
+                
+                <!-- COLUNA PRINCIPAL - FORMULÁRIO -->
+                <div class="formulario-coluna">
+                    <form id="formularioProjeto" class="projeto-form" novalidate>
+                        
+                        <!-- SEÇÃO: Informações do Cliente -->
+                        <section class="form-section animate-fade-in-up">
+                            <div class="section-header">
+                                <i class="fas fa-user"></i>
+                                <h2>Informações do Cliente</h2>
+                                <span class="section-indicator">1/6</span>
+                            </div>
+                            
+                            <div class="section-content">
+                                <div class="form-grid">
+                                    <div class="input-group">
+                                        <label for="nomeCliente" class="input-label">
+                                            <i class="fas fa-user"></i>
+                                            Nome Completo *
+                                        </label>
+                                        <input type="text" 
+                                               id="nomeCliente" 
+                                               name="nomeCliente" 
+                                               class="form-input" 
+                                               placeholder="Digite o nome completo do cliente"
+                                               maxlength="100"
+                                               required>
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label for="cnpjCpf" class="input-label">
+                                            <i class="fas fa-id-card"></i>
+                                            CNPJ/CPF
+                                        </label>
+                                        <input type="text" 
+                                               id="cnpjCpf" 
+                                               name="cnpjCpf" 
+                                               class="form-input" 
+                                               placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                                               maxlength="18">
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label for="telefone" class="input-label">
+                                            <i class="fas fa-phone"></i>
+                                            Telefone *
+                                        </label>
+                                        <input type="tel" 
+                                               id="telefone" 
+                                               name="telefone" 
+                                               class="form-input" 
+                                               placeholder="(11) 99999-9999"
+                                               maxlength="15"
+                                               required>
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label for="email" class="input-label">
+                                            <i class="fas fa-envelope"></i>
+                                            E-mail
+                                        </label>
+                                        <input type="email" 
+                                               id="email" 
+                                               name="email" 
+                                               class="form-input" 
+                                               placeholder="cliente@email.com"
+                                               maxlength="100">
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label for="cep" class="input-label">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            CEP
+                                        </label>
+                                        <input type="text" 
+                                               id="cep" 
+                                               name="cep" 
+                                               class="form-input" 
+                                               placeholder="00000-000"
+                                               maxlength="9">
+                                    </div>
+                                    
+                                    <div class="input-group full-width">
+                                        <label for="endereco" class="input-label">
+                                            <i class="fas fa-home"></i>
+                                            Endereço Completo
+                                        </label>
+                                        <input type="text" 
+                                               id="endereco" 
+                                               name="endereco" 
+                                               class="form-input" 
+                                               placeholder="Rua, número, bairro, cidade - estado"
+                                               maxlength="200">
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label for="responsavelObra" class="input-label">
+                                            <i class="fas fa-hard-hat"></i>
+                                            Responsável pela Obra
+                                        </label>
+                                        <input type="text" 
+                                               id="responsavelObra" 
+                                               name="responsavelObra" 
+                                               class="form-input" 
+                                               placeholder="Nome do responsável"
+                                               maxlength="100">
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label for="numeroResponsavel" class="input-label">
+                                            <i class="fas fa-phone-alt"></i>
+                                            Tel. Responsável
+                                        </label>
+                                        <input type="tel" 
+                                               id="numeroResponsavel" 
+                                               name="numeroResponsavel" 
+                                               class="form-input" 
+                                               placeholder="(11) 99999-9999"
+                                               maxlength="15">
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SEÇÃO: Informações do Projeto -->
+                        <section class="form-section animate-fade-in-up">
+                            <div class="section-header">
+                                <i class="fas fa-building"></i>
+                                <h2>Informações do Projeto</h2>
+                                <span class="section-indicator">2/6</span>
+                            </div>
+                            
+                            <div class="section-content">
+                                <div class="form-grid">
+                                    <div class="input-group full-width">
+                                        <label for="nomeProjeto" class="input-label">
+                                            <i class="fas fa-project-diagram"></i>
+                                            Nome do Projeto *
+                                        </label>
+                                        <input type="text" 
+                                               id="nomeProjeto" 
+                                               name="nomeProjeto" 
+                                               class="form-input" 
+                                               placeholder="Digite o nome do projeto"
+                                               maxlength="100"
+                                               required>
+                                    </div>
+                                    
+                                    <div class="input-group full-width">
+                                        <label for="codigoProjeto" class="input-label">
+                                            <i class="fas fa-hashtag"></i>
+                                            Código do Projeto
+                                        </label>
+                                        <input type="text" 
+                                               id="codigoProjeto" 
+                                               name="codigoProjeto" 
+                                               class="form-input" 
+                                               placeholder="Ex: C000"
+                                               maxlength="50">
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label for="metragemLote" class="input-label">
+                                            <i class="fas fa-ruler-combined"></i>
+                                            Metragem do Lote (m²)
+                                        </label>
+                                        <input type="number" 
+                                               id="metragemLote" 
+                                               name="metragemLote" 
+                                               class="form-input" 
+                                               placeholder="Ex: 250"
+                                               min="1"
+                                               max="99999">
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label for="areaConstruida" class="input-label">
+                                            <i class="fas fa-home"></i>
+                                            Área Construída (m²)
+                                        </label>
+                                        <input type="number" 
+                                               id="areaConstruida" 
+                                               name="areaConstruida" 
+                                               class="form-input" 
+                                               placeholder="Ex: 120"
+                                               min="1"
+                                               max="99999">
+                                    </div>
+                                </div>
+                                
+                                <!-- Tipo de Imóvel -->
+                                <div class="input-group">
+                                    <label class="input-label">
+                                        <i class="fas fa-building"></i>
+                                        Tipo de Imóvel *
+                                    </label>
+                                    <div class="radio-group">
+                                        <label class="radio-option">
+                                            <input type="radio" name="tipoImovel" value="Residencial" required>
+                                            <span class="radio-custom"></span>
+                                            Residencial
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="tipoImovel" value="Comercial">
+                                            <span class="radio-custom"></span>
+                                            Comercial
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="tipoImovel" value="Industrial">
+                                            <span class="radio-custom"></span>
+                                            Industrial
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="tipoImovel" value="Outro" id="tipoOutro">
+                                            <span class="radio-custom"></span>
+                                            Outro
+                                        </label>
+                                    </div>
+                                    
+                                    <div id="outroTipoContainer" class="subopcao-container hidden">
+                                        <input type="text" 
+                                               name="outroTipoEspecificar" 
+                                               class="form-input subopcao-input" 
+                                               placeholder="Especifique o tipo de imóvel"
+                                               maxlength="50">
+                                    </div>
+                                </div>
+                                
+                                <!-- Tipo de Projeto -->
+                                <div class="input-group">
+                                    <label class="input-label">
+                                        <i class="fas fa-tools"></i>
+                                        Tipo de Projeto *
+                                    </label>
+                                    <div class="radio-group">
+                                        <label class="radio-option">
+                                            <input type="radio" name="tipoProjeto" value="Do Zero" required>
+                                            <span class="radio-custom"></span>
+                                            Do Zero
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="tipoProjeto" value="Reforma">
+                                            <span class="radio-custom"></span>
+                                            Reforma
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SEÇÃO: Escopo do Projeto -->
+                        <section class="form-section animate-fade-in-up">
+                            <div class="section-header">
+                                <i class="fas fa-list-check"></i>
+                                <h2>Escopo do Projeto</h2>
+                                <span class="section-indicator">3/6</span>
+                            </div>
+                            
+                            <div class="section-content">
+                                <!-- Projeto Arquitetura -->
+                                <div class="escopo-group">
+                                    <h3 class="escopo-title">
+                                        <i class="fas fa-drafting-compass"></i>
+                                        Projeto Arquitetura
+                                    </h3>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-option featured">
+                                            <input type="checkbox" id="layout" name="layout" value="Layout" checked>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="option-content">
+                                                <strong>Layout</strong>
+                                                <small>Distribuição e organização dos espaços</small>
+                                            </span>
+                                        </label>
+                                        
+                                        <label class="checkbox-option featured">
+                                            <input type="checkbox" id="modelagem3d" name="modelagem3d" value="Modelagem 3D" checked>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="option-content">
+                                                <strong>Modelagem 3D</strong>
+                                                <small>Visualização tridimensional do projeto</small>
+                                            </span>
+                                        </label>
+                                        
+                                        <label class="checkbox-option featured">
+                                            <input type="checkbox" id="detalhamento" name="detalhamento" value="Detalhamento" checked>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="option-content">
+                                                <strong>Detalhamento</strong>
+                                                <small>Especificações técnicas detalhadas</small>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Subopções de Detalhamento -->
+                                    <div id="subopcoes-detalhamento-container" class="subopcoes-container">
+                                        <h4 class="subopcao-title">Detalhamentos Específicos:</h4>
+                                        <div class="checkbox-group compact">
+                                            <label class="checkbox-option">
+                                                <input type="checkbox" name="detalhamentoEspecifico[]" value="Marcenaria" checked>
+                                                <span class="checkbox-custom"></span>
+                                                Marcenaria
+                                            </label>
+                                            <label class="checkbox-option">
+                                                <input type="checkbox" name="detalhamentoEspecifico[]" value="Detalhamento Áreas Molhadas" checked>
+                                                <span class="checkbox-custom"></span>
+                                                Detalhamento Áreas Molhadas
+                                            </label>
+                                            <label class="checkbox-option">
+                                                <input type="checkbox" name="detalhamentoEspecifico[]" value="Forro" checked>
+                                                <span class="checkbox-custom"></span>
+                                                Forro
+                                            </label>
+                                            <label class="checkbox-option">
+                                                <input type="checkbox" name="detalhamentoEspecifico[]" value="Iluminação" checked>
+                                                <span class="checkbox-custom"></span>
+                                                Iluminação
+                                            </label>
+                                            <label class="checkbox-option">
+                                                <input type="checkbox" name="detalhamentoEspecifico[]" value="Tomadas" checked>
+                                                <span class="checkbox-custom"></span>
+                                                Tomadas
+                                            </label>
+                                            <label class="checkbox-option">
+                                                <input type="checkbox" name="detalhamentoEspecifico[]" value="Pisos" checked>
+                                                <span class="checkbox-custom"></span>
+                                                Pisos
+                                            </label>
+                                            <label class="checkbox-option">
+                                                <input type="checkbox" name="detalhamentoEspecifico[]" value="Executiva" checked>
+                                                <span class="checkbox-custom"></span>
+                                                Executiva
+                                            </label>
+                                            <label class="checkbox-option">
+                                                <input type="checkbox" name="detalhamentoEspecifico[]" value="Layout" checked>
+                                                <span class="checkbox-custom"></span>
+                                                Layout
+                                            </label>
+                                            <label class="checkbox-option">
+                                                <input type="checkbox" name="detalhamentoEspecifico[]" value="Demolir e Construir" checked>
+                                                <span class="checkbox-custom"></span>
+                                                Demolir e Construir
+                                            </label>
+                                            <label class="checkbox-option">
+                                                <input type="checkbox" name="detalhamentoEspecifico[]" value="Apresentação" checked>
+                                                <span class="checkbox-custom"></span>
+                                                Apresentação
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Projetos Complementares -->
+                                <div class="escopo-group">
+                                    <h3 class="escopo-title">
+                                        <i class="fas fa-cogs"></i>
+                                        Projetos Complementares
+                                    </h3>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-option">
+                                            <input type="checkbox" id="arCondicionado" name="arCondicionado" value="Ar Condicionado" checked>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="option-content">
+                                                <strong>Ar Condicionado</strong>
+                                                <small>Sistema de climatização</small>
+                                            </span>
+                                        </label>
+                                        
+                                        <label class="checkbox-option">
+                                            <input type="checkbox" id="eletrica" name="eletrica" value="Elétrica" checked>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="option-content">
+                                                <strong>Elétrica</strong>
+                                                <small>Instalações elétricas</small>
+                                            </span>
+                                        </label>
+                                        
+                                        <label class="checkbox-option">
+                                            <input type="checkbox" id="dadosVoz" name="dadosVoz" value="Dados e Voz" checked>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="option-content">
+                                                <strong>Dados e Voz</strong>
+                                                <small>Rede de internet e telefonia</small>
+                                            </span>
+                                        </label>
+                                        
+                                        <label class="checkbox-option">
+                                            <input type="checkbox" id="hidraulica" name="hidraulica" value="Hidráulica" checked>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="option-content">
+                                                <strong>Hidráulica</strong>
+                                                <small>Instalações hidráulicas</small>
+                                            </span>
+                                        </label>
+                                        
+                                        <label class="checkbox-option">
+                                            <input type="checkbox" id="cftv" name="cftv" value="CFTV" checked>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="option-content">
+                                                <strong>CFTV</strong>
+                                                <small>Circuito fechado de TV</small>
+                                            </span>
+                                        </label>
+                                        
+                                        <label class="checkbox-option">
+                                            <input type="checkbox" id="alarme" name="alarme" value="Alarme" checked>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="option-content">
+                                                <strong>Alarme</strong>
+                                                <small>Sistema de segurança</small>
+                                            </span>
+                                        </label>
+                                        
+                                        <label class="checkbox-option">
+                                            <input type="checkbox" id="incendio" name="incendio" value="Incêndio" checked>
+                                            <span class="checkbox-custom"></span>
+                                            <span class="option-content">
+                                                <strong>Incêndio</strong>
+                                                <small>Sistema de prevenção</small>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SEÇÃO: Ambientes e Necessidades -->
+                        <section class="form-section animate-fade-in-up">
+                            <div class="section-header">
+                                <i class="fas fa-home"></i>
+                                <h2>Ambientes e Necessidades</h2>
+                                <span class="contador-badge" id="contadorDemandas">0 ambientes</span>
+                                <span class="section-indicator">4/6</span>
+                            </div>
+                            
+                            <div class="section-content">
+                                <div class="section-description">
+                                    <p>Adicione cada ambiente do projeto e descreva suas necessidades específicas.</p>
+                                </div>
+                                
+                                <div id="listaDemandas" class="demandas-container">
+                                    <!-- Demandas serão inseridas aqui dinamicamente -->
+                                </div>
+                                
+                                <div class="add-ambiente-container">
+                                    <button type="button" id="adicionarDemanda" class="btn-add-ambiente">
+                                        <i class="fas fa-plus"></i>
+                                        Adicionar Ambiente
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SEÇÃO: Prazos do Projeto -->
+                        <section class="form-section animate-fade-in-up">
+                            <div class="section-header">
+                                <i class="fas fa-clock"></i>
+                                <h2>Prazos do Projeto</h2>
+                                <span class="info-badge">(em dias)</span>
+                                <span class="section-indicator">5/6</span>
+                            </div>
+                            
+                            <div class="section-content">
+                                <div class="section-description">
+                                    <p>Defina os prazos para cada etapa do projeto. O prazo total será calculado automaticamente.</p>
+                                </div>
+                                
+                                <div class="prazos-grid">
+                                    <div class="prazo-group">
+                                        <label for="prazoLevantamento" class="input-label">
+                                            <i class="fas fa-search"></i>
+                                            Levantamento
+                                        </label>
+                                        <div class="input-with-unit">
+                                            <input type="number" 
+                                                   id="prazoLevantamento" 
+                                                   name="prazoLevantamento" 
+                                                   class="form-input prazo-input" 
+                                                   placeholder="Ex: 7" 
+                                                   min="1" 
+                                                   max="365">
+                                            <span class="unit-label">dias</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="prazo-group">
+                                        <label for="prazoLayout" class="input-label">
+                                            <i class="fas fa-drafting-compass"></i>
+                                            Layout
+                                        </label>
+                                        <div class="input-with-unit">
+                                            <input type="number" 
+                                                   id="prazoLayout" 
+                                                   name="prazoLayout" 
+                                                   class="form-input prazo-input" 
+                                                   placeholder="Ex: 10" 
+                                                   min="1" 
+                                                   max="365">
+                                            <span class="unit-label">dias</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="prazo-group">
+                                        <label for="prazoModelagem3d" class="input-label">
+                                            <i class="fas fa-cube"></i>
+                                            Modelagem 3D
+                                        </label>
+                                        <div class="input-with-unit">
+                                            <input type="number" 
+                                                   id="prazoModelagem3d" 
+                                                   name="prazoModelagem3d" 
+                                                   class="form-input prazo-input" 
+                                                   placeholder="Ex: 15" 
+                                                   min="1" 
+                                                   max="365">
+                                            <span class="unit-label">dias</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="prazo-group">
+                                        <label for="prazoProjetoExecutivo" class="input-label">
+                                            <i class="fas fa-tools"></i>
+                                            Projeto Executivo
+                                        </label>
+                                        <div class="input-with-unit">
+                                            <input type="number" 
+                                                   id="prazoProjetoExecutivo" 
+                                                   name="prazoProjetoExecutivo" 
+                                                   class="form-input prazo-input" 
+                                                   placeholder="Ex: 20" 
+                                                   min="1" 
+                                                   max="365">
+                                            <span class="unit-label">dias</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="prazo-group">
+                                        <label for="prazoComplementares" class="input-label">
+                                            <i class="fas fa-cogs"></i>
+                                            Complementares
+                                        </label>
+                                        <div class="input-with-unit">
+                                            <input type="number" 
+                                                   id="prazoComplementares" 
+                                                   name="prazoComplementares" 
+                                                   class="form-input prazo-input" 
+                                                   placeholder="Ex: 25" 
+                                                   min="1" 
+                                                   max="365">
+                                            <span class="unit-label">dias</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="prazo-group prazo-total-group">
+                                        <label for="prazoTotal" class="input-label total-label">
+                                            <i class="fas fa-calculator"></i>
+                                            Prazo Total
+                                        </label>
+                                        <div class="input-with-unit total-input">
+                                            <input type="number" 
+                                                   id="prazoTotal" 
+                                                   name="prazoTotal" 
+                                                   class="form-input prazo-total-input" 
+                                                   readonly>
+                                            <span class="unit-label">dias</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="prazo-legenda">
+                                    <div class="legenda-item success">
+                                        <span class="legenda-cor"></span>
+                                        <span>Até 30 dias - Prazo Adequado</span>
+                                    </div>
+                                    <div class="legenda-item warning">
+                                        <span class="legenda-cor"></span>
+                                        <span>31-60 dias - Prazo Moderado</span>
+                                    </div>
+                                    <div class="legenda-item error">
+                                        <span class="legenda-cor"></span>
+                                        <span>Acima de 60 dias - Prazo Extenso</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SEÇÃO: Ações -->
+                        <section class="form-section animate-fade-in-up">
+                            <div class="section-header">
+                                <i class="fas fa-cog"></i>
+                                <h2>Finalizar</h2>
+                                <span class="section-indicator">6/6</span>
+                            </div>
+                            
+                            <div class="section-content">
+                                <div class="actions-container">
+                                    <button type="button" id="gerar" class="btn-primary">
+                                        <i class="fas fa-file-pdf"></i>
+                                        Gerar Relatório PDF
+                                    </button>
+                                    
+                                    <button type="button" id="limpar" class="btn-secondary">
+                                        <i class="fas fa-trash-alt"></i>
+                                        Limpar Formulário
+                                    </button>
+                                </div>
+                                
+                                <div class="progress-container">
+                                    <div class="progress-label">
+                                        <span>Progresso do Preenchimento:</span>
+                                        <span class="progress-percentage">0%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                    </form>
+                </div>
+
+                <!-- COLUNA LATERAL - OBSERVAÇÕES -->
+                <aside class="observacoes-coluna-lateral-fixa">
+                    <div class="observacoes-header">
+                        <i class="fas fa-sticky-note"></i>
+                        <h2>Observações Adicionais</h2>
+                    </div>
+                    
+                    <div class="observacoes-container">
+                        <div class="observacao-section sticky" data-section="cliente">
+                            <label for="observacaoCliente" class="input-label">
+                                <i class="fas fa-user"></i>
+                                Cliente
+                            </label>
+                            <textarea id="observacaoCliente" 
+                                      name="observacaoCliente" 
+                                      class="form-textarea" 
+                                      placeholder="Observações sobre o cliente..."
+                                      rows="3"></textarea>
+                        </div>
+                        
+                        <div class="observacao-section sticky" data-section="projeto">
+                            <label for="observacaoProjeto" class="input-label">
+                                <i class="fas fa-building"></i>
+                                Projeto
+                            </label>
+                            <textarea id="observacaoProjeto" 
+                                      name="observacaoProjeto" 
+                                      class="form-textarea" 
+                                      placeholder="Observações sobre o projeto..."
+                                      rows="3"></textarea>
+                        </div>
+                        
+                        <div class="observacao-section sticky" data-section="escopo">
+                            <label for="observacaoEscopo" class="input-label">
+                                <i class="fas fa-list-check"></i>
+                                Escopo
+                            </label>
+                            <textarea id="observacaoEscopo" 
+                                      name="observacaoEscopo" 
+                                      class="form-textarea" 
+                                      placeholder="Observações sobre o escopo..."
+                                      rows="3"></textarea>
+                        </div>
+                        
+                        <div class="observacao-section sticky" data-section="ambientes">
+                            <label for="observacaoAmbientes" class="input-label">
+                                <i class="fas fa-home"></i>
+                                Ambientes
+                            </label>
+                            <textarea id="observacaoAmbientes" 
+                                      name="observacaoAmbientes" 
+                                      class="form-textarea" 
+                                      placeholder="Observações sobre os ambientes..."
+                                      rows="3"></textarea>
+                        </div>
+                        
+                        <div class="observacao-section sticky" data-section="prazos">
+                            <label for="observacaoPrazos" class="input-label">
+                                <i class="fas fa-clock"></i>
+                                Prazos
+                            </label>
+                            <textarea id="observacaoPrazos" 
+                                      name="observacaoPrazos" 
+                                      class="form-textarea" 
+                                      placeholder="Observações sobre os prazos..."
+                                      rows="3"></textarea>
+                        </div>
+                        
+                        <div class="observacao-section sticky" data-section="final">
+                            <label for="observacaoFinal" class="input-label">
+                                <i class="fas fa-flag"></i>
+                                Observações Finais
+                            </label>
+                            <textarea id="observacaoFinal" 
+                                      name="observacaoFinal" 
+                                      class="form-textarea" 
+                                      placeholder="Observações gerais..."
+                                      rows="4"></textarea>
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">            <div class="footer-content">
+                <div class="footer-info">
+                    <p>&copy; 2024 SKBORGES - Sistema de Projetos Arquitetônicos</p>
+                    <p class="version-info">Versão 4.0 - Desenvolvido com tecnologia avançada</p>
+                    <p class="creator-info">...</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">
+                        <i class="fas fa-question-circle"></i>
+                        Ajuda
+                    </a>
+                    <a href="#" class="footer-link">
+                        <i class="fas fa-envelope"></i>
+                        Contato
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" class="scroll-to-top" aria-label="Voltar ao topo">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script>
+    // Força a página a começar no topo ao carregar
+    window.addEventListener('beforeunload', function() {
+        window.scrollTo(0, 0);
+    });
+
+    // Garante que a página comece no topo
+    window.addEventListener('load', function() {
+        // Remove o loading screen
+        const loadingScreen = document.getElementById('page-loading');
+        if (loadingScreen) {
+            setTimeout(() => {
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 300);
+            }, 1000);
+        }
+        
+        // Força o scroll para o topo
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        }, 100);
+    });
+
+    // Também força ao início quando a página é recarregada
+    document.addEventListener('DOMContentLoaded', function() {
+        // Força scroll para o topo imediatamente
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        
+        // Restaura o scroll behavior smooth após garantir que começou no topo
+        setTimeout(() => {
+            document.documentElement.style.scrollBehavior = 'smooth';
+        }, 500);
+    });
+
+    // Previne que o navegador restaure a posição anterior do scroll
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    </script>
+    <script src="js/script.js"></script>
+</body>
+</html>
